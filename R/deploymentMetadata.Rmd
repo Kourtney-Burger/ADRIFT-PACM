@@ -1,0 +1,178 @@
+---
+title: "Prepping Deployment Metadata"
+author: "Kourtney Burger"
+date: "2024-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Packages & Set Working Directory
+## Load Packages
+```{r}
+# library(here)
+# library(xlsx)
+# library(openxlsx)
+# library(tidyverse)
+# library(dplyr)
+```
+
+## Set Working Directory
+```{r}
+DepDir <- here()
+```
+
+# Read in Data
+## Read in Deployment Details
+```{r}
+deployDetails <- read.csv(here('R/deploymentDetails/Deployment Details - deployDetails.csv'))
+```
+
+## Read in PACM Deployment Templates
+```{r}
+Template <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Metadata_Template')
+FieldDefinitions <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Field_Definitions')
+Filename_Instructions <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Filename_Instructions')
+```
+
+# Taiki's helper function for dates
+
+Helper function to create all the "YYYY-MM-DDThh:mm:ssZ" formatted date strings that JSON will want. *Note that this requires that you convert all your dates in the deploy details data that you read in earlier (or anywhere else you might read dates from) to POSIXct format.*
+```{r}
+posixToText <- function(x) {
+    format(x, '%Y-%m-%dT%H:%M:%S')
+}
+```
+
+# Prep and Clean Metadata
+## Create Dataframe
+```{r}
+# Remove unusable drifts
+names(deployDetails)[10] <- "Status"
+deployDetails <- subset(deployDetails, Status == "Complete")
+
+#Subset only ADRIFT, CCES, and PASCAL
+deployDetails <- subset(deployDetails, Project == "ADRIFT")
+
+#Subset usable fields from deployment details
+dep <- subset(deployDetails, select = c('Data_ID', 'Project', 'Instrument_ID', 'Site', 'Type', 'SensorNumber_1', 'Data_Start', 'Data_End', 'Deployment_Depth_m.', 'SampleRate_kHz', 'RecordingDuration_m', 'RecordingInterval_m'))
+
+#Add additional columns
+dep <- dep %>%
+  add_column(DATA_POC_NAME = 'Shannon Rankin', DATA_POC_AFFILIATION = 'NOAA SWFSC', DATA_POC_EMAIL = 'shannon.rankin@noaa.gov', STATIONARY_OR_MOBILE = 'Mobile', PLATFORM_TYPE = 'Drifting-buoy', CHANNEL = '1', SOUNDFILES_TIMEZONE = 'UTC-0', LATITUDE = '', LONGITUDE = '', WATER_DEPTH_METERS = '', SAMPLE_BITS = '16', SUBMITTER_NAME = 'Kourtney Burger', SUBMITTER_AFFILIATION = 'NOAA SWFSC', SUBMITTER_EMAIL = 'kourtney.burger@noaa.gov', SUBMISSION_DATE = '2024-04-10T10:00:00-07:00
+')
+
+
+#Reorder columns
+dep <- dep[, c(1,2,13,14,15,16,17,3,4,5,6,18,7,8,19,20,21,22,9,10,11,12,23,24,25,26,27)]
+
+#Rename columns
+dep <- dep %>%
+  rename(UNIQUE_ID = Data_ID, PROJECT = Project, PLATFORM_NO = Instrument_ID, SITE_ID = Site, INSTRUMENT_TYPE = Type, INSTRUMENT_ID = SensorNumber_1, MONITORING_START_DATETIME = Data_Start, MONITORING_END_DATETIME = Data_End, RECORDER_DEPTH_METERS = Deployment_Depth_m., SAMPLING_RATE_HZ = SampleRate_kHz, RECORDING_DURATION_SECONDS = RecordingDuration_m, RECORDING_INTERVAL_SECONDS = RecordingInterval_m)
+```
+
+## Create Unique ID
+```{r}
+deployDetails$Month_Yr_PACMID <- as.POSIXct(deployDetails$Deployment_Date, format = "%m/%d/%Y %H:%M:%S", tz='UTC')
+
+deployDetails$Month_Yr_PACMID <- format(deployDetails$Month_Yr_PACMID,"%Y%m")
+
+dep$UNIQUE_ID <- paste0('SWFSC_', 'Region_', deployDetails$Month_Yr_PACMID, '_', dep$UNIQUE_ID)
+```
+
+## Convert site names
+```{r}
+# Change Site Names
+dep[dep == "WAS"] <- "Washington"
+dep[dep == "COL"] <- "Columbia River"
+dep[dep == "ORE"] <- "Oregon"
+dep[dep == "HUM"] <- "Humboldt"
+dep[dep == "MND"] <- "Mendocino"
+dep[dep == "PTA"] <- "Point Arena"
+dep[dep == "SFB"] <- "San Francisco Bay"
+dep[dep == "HMB"] <- "Half Moon Bay"
+dep[dep == "MBY"] <- "Monterey Bay"
+dep[dep == "MOB"] <- "Morro Bay"
+dep[dep == "CHI"] <- "Channel Islands"
+dep[dep == "LAB"] <- "Los Angeles Basin"
+dep[dep == "SND"] <- "San Diego"
+dep[dep == "BCN"] <- "Baja California Norte"
+dep[dep == "BCS"] <- "Baja California Sur"
+```
+
+## Convert Recorder Type
+```{r}
+# Change soundtrap names
+dep[dep == "ST640"] <- "SoundTrap 640"
+dep[dep == "ST4300HF"] <- "SoundTrap 4300 High Frequency"
+dep[dep == "ST300"] <- "SoundTrap 300"
+dep[dep == "ST4300STD"] <- "SoundTrap 4300"
+dep[dep == "ST500HF"] <- "SoundTrap 500 High Frequency"
+dep[dep == "ST300HF"] <- "SoundTrap 300 High Frequency"
+```
+
+
+## Convert Dates
+```{r}
+#Convert start date
+dep$MONITORING_START_DATETIME <- posixToText(as.POSIXct(dep$MONITORING_START_DATETIME, format = "%m/%d/%Y %H:%M:%S", tz='UTC'))
+
+#Convert end date
+dep$MONITORING_END_DATETIME <- posixToText(as.POSIXct(dep$MONITORING_END_DATETIME, format = "%m/%d/%Y %H:%M:%S", tz='UTC'))
+```
+
+## Convert sample rates
+```{r}
+#Convert sample rate from kHz to Hz
+dep$SAMPLING_RATE_HZ <- dep$SAMPLING_RATE_HZ*1000
+```
+
+## Convert duration and interval
+```{r}
+#Convert recording duration from minutes to seconds
+dep$RECORDING_DURATION_SECONDS[dep$RECORDING_DURATION_SECONDS == "Continuous"] <- "60"
+dep$RECORDING_INTERVAL_SECONDS <- dep$RECORDING_INTERVAL_SECONDS %>% replace(is.na(.), 0)
+dep$RECORDING_DURATION_SECONDS <- as.numeric(dep$RECORDING_DURATION_SECONDS)
+
+for (i in 1:nrow(dep)) {
+  if(dep$RECORDING_DURATION_SECONDS[i] == dep$RECORDING_INTERVAL_SECONDS[i]) {
+    dep$RECORDING_DURATION_SECONDS[i] <- 60
+    dep$RECORDING_INTERVAL_SECONDS[i] <- 0
+  }
+}
+
+for (i in 1:nrow(dep)) {
+  if(dep$RECORDING_INTERVAL_SECONDS[i] > 0) {
+    dep$RECORDING_INTERVAL_SECONDS[i] <- dep$RECORDING_INTERVAL_SECONDS[i]-dep$RECORDING_DURATION_SECONDS[i]
+  }
+}
+
+dep$RECORDING_DURATION_SECONDS <- dep$RECORDING_DURATION_SECONDS*60
+dep$RECORDING_INTERVAL_SECONDS <- dep$RECORDING_INTERVAL_SECONDS*60
+```
+
+## Correct Channel
+Some drifts had CH2 analyzed instead of CH1. Correct hydrophone serial number and channel number as necessary
+```{r}
+
+```
+
+# Export Metadata
+```{r}
+#Create worksheet
+depFile <- paste('SWFSC_20240410_METADATA.xlsx')
+depFilePath = file.path(DepDir, depFile)
+
+wb = createWorkbook()
+shtMetadata_Template = addWorksheet(wb, "Metadata_Template")
+shtField_Definitions = addWorksheet(wb, "Field_Definitions")
+shtFilename_Instructions = addWorksheet(wb, "Filename_Instructions")
+
+writeData(wb, shtMetadata_Template, dep)
+writeData(wb, shtField_Definitions, FieldDefinitions)
+writeData(wb, shtFilename_Instructions, Filename_Instructions)
+
+saveWorkbook(wb, depFilePath, overwrite = TRUE)
+```
