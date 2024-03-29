@@ -12,11 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # Load Packages & Set Working Directory
 ## Load Packages
 ```{r}
-# library(here)
-# library(xlsx)
-# library(openxlsx)
-# library(tidyverse)
-# library(dplyr)
+library(here)
+library(xlsx)
+library(openxlsx)
+library(tidyverse)
+library(dplyr)
 ```
 
 ## Set Working Directory
@@ -79,7 +79,7 @@ deployDetails$Month_Yr_PACMID <- as.POSIXct(deployDetails$Deployment_Date, forma
 
 deployDetails$Month_Yr_PACMID <- format(deployDetails$Month_Yr_PACMID,"%Y%m")
 
-dep$UNIQUE_ID <- paste0('SWFSC_', 'Region_', deployDetails$Month_Yr_PACMID, '_', dep$UNIQUE_ID)
+dep$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', deployDetails$Site, '_', deployDetails$Month_Yr_PACMID, '_', dep$UNIQUE_ID)
 ```
 
 ## Convert site names
