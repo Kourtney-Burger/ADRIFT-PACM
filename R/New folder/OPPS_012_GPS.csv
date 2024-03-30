@@ -1,0 +1,2 @@
+"Id","Latitude","Longitude","UTC","DeviceName","DeviceId","Message","recordingEffort","DriftName","DeploymentSite"
+1813948126,37.95719,-123.57631,2022-07-30 20:09:31,"K","0-2572045","MessageType: UNLIMITED-TRACK, Battery State: GOOD",TRUE,"OPPS_012","SFB"

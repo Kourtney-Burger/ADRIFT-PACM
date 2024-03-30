@@ -113,7 +113,6 @@ dep[dep == "ST500HF"] <- "SoundTrap 500 High Frequency"
 dep[dep == "ST300HF"] <- "SoundTrap 300 High Frequency"
 ```
 
-
 ## Convert Dates
 ```{r}
 #Convert start date

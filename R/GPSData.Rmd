@@ -1,0 +1,103 @@
+---
+title: "PACM GPS Data"
+author: "Kourtney Burger"
+date: "2024-03-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load Packages & Set Working Directory
+## Taiki's helper function for dates
+
+Helper function to create all the "YYYY-MM-DDThh:mm:ssZ" formatted date strings that JSON will want. *Note that this requires that you convert all your dates in the deploy details data that you read in earlier (or anywhere else you might read dates from) to POSIXct format.*
+```{r}
+posixToText <- function(x) {
+    format(x, '%Y-%m-%dT%H:%M:%S')
+}
+```
+
+## Load Packages
+```{r}
+library(here)
+library(xlsx)
+library(openxlsx)
+library(tidyverse)
+library(dplyr)
+library(readr)
+```
+
+## Set Working Directory
+```{r}
+DepDir <- here::here()
+```
+
+## Read in PACM GPS Templates
+```{r}
+Template <- xlsx::read.xlsx(here::here('PACM Templates/SWFSC_YYYYMMDD_GPSDATA.xlsx'), sheetName = 'Mobile_GPS_Template')
+FieldDefinitions <- xlsx::read.xlsx(here::here('PACM Templates/SWFSC_YYYYMMDD_GPSDATA.xlsx'), sheetName = 'Field_Definitions')
+Filename_Instructions <- xlsx::read.xlsx(here::here('PACM Templates/SWFSC_YYYYMMDD_GPSDATA.xlsx'), sheetName = 'Filename_Instructions')
+```
+
+## Read in GPS Data
+```{r}
+library(plyr)
+# Set the directory where your CSV files are located
+GPS_directory <- here::here('R/GPS')
+
+# Get a list of CSV files in the directory (adjust the pattern if needed)
+GPS_files <- list.files(path = GPS_directory, 
+            pattern = "*.csv", full.names = TRUE)
+
+# Combine the list of dataframes into a single dataframe
+PACM_GPS <- do.call("rbind.fill", lapply(GPS_files, read.csv))
+```
+
+## Read in Deployment Details
+```{r}
+deployDetails <- read.csv(here::here('R/deploymentDetails/Deployment Details - deployDetails.csv'))
+
+# Remove unusable drifts
+names(deployDetails)[10] <- "Status"
+deployDetails <- subset(deployDetails, Status == "Complete")
+
+#Subset only ADRIFT, CCES, and PASCAL
+deployDetails <- subset(deployDetails, Project == "ADRIFT")
+```
+
+# Clean and subset data
+## Subset data
+```{r}
+PACM_GPS <- subset(PACM_GPS, select = c('DriftName', 'UTC', 'Latitude', 'Longitude'))
+```
+
+## Rename Columns
+```{r}
+PACM_GPS <- PACM_GPS %>% 
+  dplyr::rename(UNIQUE_ID = DriftName, DATETIME = UTC, LATITUDE = Latitude, LONGITUDE = Longitude)
+```
+
+## Create Unique ID
+```{r}
+deployDetails$Month_Yr_PACMID <- as.POSIXct(deployDetails$Deployment_Date, format = "%m/%d/%Y %H:%M:%S", tz='UTC')
+
+deployDetails$Month_Yr_PACMID <- format(deployDetails$Month_Yr_PACMID,"%Y%m")
+
+PACM_GPS$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', deployDetails$Site, '_', deployDetails$Month_Yr_PACMID, '_', PACM_GPS$UNIQUE_ID)
+```
+
+## Correct Date/Time
+```{r}
+PACM_GPS$DATETIME <- posixToText(as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC'))
+
+```
+
+# Export GPS Data
+```{r}
+SWFSC_20240410_GPSDATA.csv <- write.csv(PACM_GPS)
+
+write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
+```
+
