@@ -70,7 +70,7 @@ deployDetails <- subset(deployDetails, Project == "ADRIFT")
 # Clean and subset data
 ## Subset data
 ```{r}
-PACM_GPS <- subset(PACM_GPS, select = c('DriftName', 'UTC', 'Latitude', 'Longitude'))
+PACM_GPS <- subset(PACM_GPS, select = c('DriftName', 'UTC', 'Latitude', 'Longitude', 'DeploymentSite'))
 ```
 
 ## Rename Columns
@@ -81,17 +81,21 @@ PACM_GPS <- PACM_GPS %>%
 
 ## Create Unique ID
 ```{r}
-deployDetails$Month_Yr_PACMID <- as.POSIXct(deployDetails$Deployment_Date, format = "%m/%d/%Y %H:%M:%S", tz='UTC')
+PACM_GPS$Month_Yr <- as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC')
 
-deployDetails$Month_Yr_PACMID <- format(deployDetails$Month_Yr_PACMID,"%Y%m")
+PACM_GPS$Month_Yr <- format(PACM_GPS$Month_Yr,"%Y%m")
 
-PACM_GPS$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', deployDetails$Site, '_', deployDetails$Month_Yr_PACMID, '_', PACM_GPS$UNIQUE_ID)
+# Correct Site Name
+PACM_GPS[PACM_GPS == "Crescent City"] <- "HUM"
+
+PACM_GPS$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', PACM_GPS$DeploymentSite, '_', PACM_GPS$Month_Yr, '_', PACM_GPS$UNIQUE_ID)
+
+PACM_GPS <- subset(PACM_GPS, select = c('UNIQUE_ID', 'DATETIME', 'LATITUDE', 'LONGITUDE'))
 ```
 
 ## Correct Date/Time
 ```{r}
 PACM_GPS$DATETIME <- posixToText(as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC'))
-
 ```
 
 # Export GPS Data
