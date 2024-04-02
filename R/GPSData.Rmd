@@ -102,6 +102,6 @@ PACM_GPS$DATETIME <- posixToText(as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%
 ```{r}
 SWFSC_20240410_GPSDATA.csv <- write.csv(PACM_GPS)
 
-write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
+write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/CCES/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
 ```
 

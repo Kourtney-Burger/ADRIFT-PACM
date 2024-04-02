@@ -9,3 +9,101 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Load Packages & Set Working Directory
+## Load Packages
+```{r}
+library(here)
+library(xlsx)
+library(openxlsx)
+library(tidyverse)
+library(dplyr)
+```
+
+## Set Working Directory
+```{r}
+DepDir <- here()
+```
+
+# Read in Data
+## Read in template
+```{r}
+Template <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_DETECTIONDATA.xlsx'), sheetName = 'Detection_Data_Template')
+```
+
+
+# Taiki's helper function for dates
+
+Helper function to create all the "YYYY-MM-DDThh:mm:ssZ" formatted date strings that JSON will want. *Note that this requires that you convert all your dates in the deploy details data that you read in earlier (or anywhere else you might read dates from) to POSIXct format.*
+```{r}
+posixToText <- function(x) {
+    format(x, '%Y-%m-%dT%H:%M:%S')
+}
+```
+
+# Create Dataframe
+```{r}
+detections <- data.frame(matrix(ncol = 22, nrow = 0))
+
+colnames(detections) <- c('UNIQUE_ID', 'ANALYSIS_PERIOD_START_DATETIME', 'ANALYSIS_PERIOD_END_DATETIME', 'ANALYSIS_PERIOD_EFFORT_SECONDS', 'ANALYSIS_TIME_ZONE', 'SPECIES_CODE', 'ACOUSTIC_PRESENCE', 'N_VALIDATED_DETECTIONS', 'CALL_TYPE_CODE', 'DETECTION_METHOD', 'PROTOCOL_REFERENCE', 'DETECTION_SOFTWARE_NAME', 'DETECTION_SOFTWARE_VERSION', 'MIN_ANALYSIS_FREQUENCY_RANGE_HZ', 'MAX_ANALYSIS_FREQUENCY_RANGE_HZ', 'ANALYSIS_SAMPLING_RATE_HZ', 'QC_PROCESSING', 'LOCALIZED_LATITUDE', 'LOCALIZED_LONGITUDE', 'DETECTION_DISTANCE_M', 'LOCALIZATION_DISTANCE_METHOD', 'LOCALIZATION_DISTANCE_PROTOCOL')
+```
+
+# Detections
+## Minke
+```{r}
+
+```
+
+## Blue
+```{r}
+
+```
+
+## Brydes
+```{r}
+
+```
+
+## Sei
+```{r}
+
+```
+
+## Fin
+```{r}
+
+```
+
+## Gray
+```{r}
+
+```
+
+## Humpback
+```{r}
+
+```
+
+## NBHF
+```{r}
+
+```
+
+## Sperm Whales
+```{r}
+```
+
+
+## Dolphins
+```{r}
+
+```
+
+## Beaked Whales
+```{r}
+
+```
+
+# Export Metadata
+```{r}
+write.csv(detections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
+```

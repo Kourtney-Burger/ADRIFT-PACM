@@ -33,8 +33,6 @@ deployDetails <- read.csv(here('R/deploymentDetails/Deployment Details - deployD
 ## Read in PACM Deployment Templates
 ```{r}
 Template <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Metadata_Template')
-# FieldDefinitions <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Field_Definitions')
-# Filename_Instructions <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Filename_Instructions')
 ```
 
 # Taiki's helper function for dates
@@ -54,7 +52,7 @@ names(deployDetails)[10] <- "Status"
 deployDetails <- subset(deployDetails, Status == "Complete")
 
 #Subset only ADRIFT, CCES, and PASCAL
-deployDetails <- subset(deployDetails, Project == "ADRIFT")
+deployDetails <- subset(deployDetails, Project == "CCES")
 
 #Subset usable fields from deployment details
 dep <- subset(deployDetails, select = c('Data_ID', 'Project', 'Instrument_ID', 'Site', 'Type', 'SensorNumber_1', 'Data_Start', 'Data_End', 'Deployment_Depth_m.', 'SampleRate_kHz', 'RecordingDuration_m', 'RecordingInterval_m'))
@@ -160,5 +158,5 @@ Some drifts had CH2 analyzed instead of CH1. Correct hydrophone serial number an
 
 # Export Metadata
 ```{r}
-write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/SWFSC_20240410_METADATA.csv", row.names=FALSE)
+write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/CCES/SWFSC_20240415_METADATA.csv", row.names=FALSE)
 ```
