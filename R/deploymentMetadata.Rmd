@@ -21,7 +21,7 @@ library(dplyr)
 
 ## Set Working Directory
 ```{r}
-DepDir <- here()
+DepDir <- here::here()
 ```
 
 # Read in Data
@@ -59,7 +59,7 @@ dep <- subset(deployDetails, select = c('Data_ID', 'Project', 'Instrument_ID', '
 
 #Add additional columns
 dep <- dep %>%
-  add_column(DATA_POC_NAME = 'Shannon Rankin', DATA_POC_AFFILIATION = 'NOAA SWFSC', DATA_POC_EMAIL = 'shannon.rankin@noaa.gov', STATIONARY_OR_MOBILE = 'Mobile', PLATFORM_TYPE = 'Drifting-buoy', CHANNEL = '1', SOUNDFILES_TIMEZONE = 'UTC-0', LATITUDE = '', LONGITUDE = '', WATER_DEPTH_METERS = '', SAMPLE_BITS = '16', SUBMITTER_NAME = 'Kourtney Burger', SUBMITTER_AFFILIATION = 'NOAA SWFSC', SUBMITTER_EMAIL = 'kourtney.burger@noaa.gov', SUBMISSION_DATE = '2024-04-10T10:00:00')
+  add_column(DATA_POC_NAME = 'Shannon Rankin', DATA_POC_AFFILIATION = 'NOAA SWFSC', DATA_POC_EMAIL = 'shannon.rankin@noaa.gov', STATIONARY_OR_MOBILE = 'Mobile', PLATFORM_TYPE = 'Drifting-buoy', CHANNEL = '1', SOUNDFILES_TIMEZONE = 'UTC', LATITUDE = '', LONGITUDE = '', WATER_DEPTH_METERS = '', SAMPLE_BITS = '16', SUBMITTER_NAME = 'Kourtney Burger', SUBMITTER_AFFILIATION = 'NOAA SWFSC', SUBMITTER_EMAIL = 'kourtney.burger@noaa.gov', SUBMISSION_DATE = '2024-04-10T10:00:00')
 
 dep$SUBMISSION_DATE <- posixToText(as.POSIXct(dep$SUBMISSION_DATE))
 
