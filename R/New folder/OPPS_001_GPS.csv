@@ -1,3 +1,0 @@
-"Id","Latitude","Longitude","UTC","DeviceName","DeviceId","Message","recordingEffort","DriftName","DeploymentSite"
-3932227954,35.498717,-121.144633,2022-06-22 00:18:01,"OPPS_001_D",NA,NA,FALSE,"OPPS_001","MBY"
-3932227955,35.498183,-121.143267,2022-06-22 00:41:59,"OPPS_001_R",NA,NA,TRUE,"OPPS_001","MBY"
