@@ -496,7 +496,6 @@ for (i in 1:nrow(PACMdetections)) {
 }
 close(pb) # Close the connection
 ```
-
 ## Fin - Cory/Liz  
 ### NOTE DIFFERENT METHODS FOR DIFFERENT PROJECTS
 ```{r}
@@ -548,7 +547,8 @@ close(pb) # Close the connection
 
 ## Anthro? 
 
+
 # Export Metadata
 ```{r}
-write.csv(detections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
+write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
 ```
