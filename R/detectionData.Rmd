@@ -550,5 +550,9 @@ close(pb) # Close the connection
 
 # Export Metadata
 ```{r}
+#Save subsample for PACM testing
+# PACMdetectionsSubsample <- PACMdetections[1:100000, ]
+# write.csv(PACMdetectionsSubsample, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/Subsample-SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
+
 write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
 ```
