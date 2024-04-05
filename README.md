@@ -8,3 +8,5 @@ Methods for archiving acoustic detection data to [Passive Acoustic Cetacean Map
 3. Run [GPS data script](https://github.com/Kourtney-Burger/ADRIFT-PACM/blob/ada1c7c8d2d7560e1304f9bca5683a791784c0ab/R/GPSData.Rmd)
 4. Run [detection data script](https://github.com/Kourtney-Burger/ADRIFT-PACM/blob/ada1c7c8d2d7560e1304f9bca5683a791784c0ab/R/detectionData.Rmd)
 5. Follow instructions on the [PACM website](https://www.fisheries.noaa.gov/resource/document/passive-acoustic-reporting-system-templates) to submit exported datasheets
+
+## [PACM Questions](https://docs.google.com/document/d/1dGizzKL0AXMY6Xilt4LG5TRCfclibCCQCXriZ58r5Qo/edit?pli=1)
