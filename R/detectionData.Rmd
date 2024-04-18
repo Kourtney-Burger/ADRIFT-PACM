@@ -41,7 +41,7 @@ Template <- xlsx::read.xlsx(here::here('PACM Templates/SWFSC_YYYYMMDD_DETECTIOND
 
 ## Read Detection data
 ```{r}
-allDetections <- read.csv(here::here('R/detections/AllDetections_wGPS.csv'))
+allDetections <- read.csv(here::here('R/detections/AllDetectionsHourly.csv'))
 ```
 
 # Clean Detection Data
@@ -49,7 +49,12 @@ allDetections <- read.csv(here::here('R/detections/AllDetections_wGPS.csv'))
 ##Subset Detection Data
 ```{r}
 # Subset PACM fields
-detections <- subset(allDetections, select = c('UTC', 'end', 'species', 'call', 'DriftName'))
+detections <- subset(allDetections, select = c('UTC', 'species', 'call', 'DriftName'))
+```
+
+## Subset Project
+```{r}
+detections <- detections[str_detect(detections$DriftName, "ADRIFT"),]
 ```
 
 ## Convert Species Names to PACM Species Codes (from Taiki)
@@ -58,15 +63,10 @@ detRename <- tribble(
     ~old, ~new,
     'B. borealis', 'SEWH', #Sei whale
     'Ba', 'MIWH', #Minke whale (common)
-    'minke','MIWH', #Minke whale (common)
     'Bm', 'BLWH', #Blue whale
     'Bp', 'FIWH', #Fin whale
-    'Bp 40-50 Hz', 'FIWH', #Fin whale
-    'fin','FIWH', #Fin whale
-    'gray','GRWH', #Gray whale
-    'humpback','HUWH', #Humpback whale
+    'Er','GRWH', #Gray whale
     'Mn','HUWH', #Humpback whale
-    'PM', 'SPWH', #Sperm whale
     'Pm', 'SPWH', #Sperm whale
     'Lo', 'PWDO', #Pacific white-sided dolphin
     'Gg', 'GRAM', #Risso's dolphin
@@ -76,11 +76,11 @@ detRename <- tribble(
 
 #Add to PACM        
     'Anthro', 'ANTHRO', 
-    'BB', 'BB', #beaked whale, Bairds/Berardius bairdii?  
+    'BB', 'BWBB', #beaked whale, Bairds/Berardius bairdii?  
     'BW43', 'BW43', #Unidentified Beaked whale 43kHz  
     'BWC', 'BWC', #Cross Beaked whale (Cross Seamount),  
-    'MC', 'MC', #Hubb's/Mesoplodon carlhubbsi, formerly known as beaked whale 37V kHz 
-    'MS', 'MS', #beaked whale, Stejneger's/Mesoplodon stejnegeri 
+    'MC', 'BWMC', #Hubb's/Mesoplodon carlhubbsi, formerly known as beaked whale 37V kHz 
+    'MS', 'BWMS', #beaked whale, Stejneger's/Mesoplodon stejnegeri 
     'NBHF','NBHF', #Kogia, Dall's, and Harbor porpoise 
 )
 
@@ -95,172 +95,47 @@ for(i in 1:nrow(detRename)) {
 
 ## Convert Call Type to PACM Call Type Codes
 ```{r}
-# Set up progress bar
-pb <- txtProgressBar(min = 0,      # Minimum value of the progress bar
-                     max = nrow(detections), # Maximum value of the progress bar
-                     style = 3,    # Progress bar style (also available style = 1 and style = 2)
-                     width = 50,   # Progress bar width. Defaults to getOption("width")
-                     char = "=")   # Character used to create the bar
-
-#Add sperm whale click call type
-for (i in 1:nrow(detections)) {
-  if (detections$species[i] == "SPWH") {
-    if (is.na(detections$call[i]) || detections$call[i] == "Clicks") {
-      detections$call[i] <- "SPUSC"
-    }
-  } 
-  # Sets the progress bar to the current state
-  setTxtProgressBar(pb, i)
-}
-close(pb) # Close the connection
-
-
-#Clean call types attributed to multiple species
-# odontocete 'clicks'
-for (i in 1:nrow(detections)) { 
-  if (detections$species[i] == "PWDO" || detections$species[i] == "GRAM") {
-    if (detections$call[i] == "Clicks" || detections$call[i] == "clicks") {
-      detections$call[i] <- "ODCLICK"
-    }
-  }
-  # Sets the progress bar to the current state
-  setTxtProgressBar(pb, i)
-}
-close(pb) # Close the connection
-
-
-# 'DS' - downsweeps (Sei, Blue, and Fin)
-for (i in 1:nrow(detections)) { 
-  #Sei (also correcting one PASCAL event mislabeled "Tonal w/Harm)
-  if (detections$species[i] == "SEWH") {
-    if (detections$call[i] == "DS" || detections$call[i] == "Tonal w/Harm") {
-      detections$call[i] <- "SWDS"
-    }
-  }
-}
-
-for (i in 1:nrow(detections)) {   
-  #Blue - ADD TO PACM
-  if (detections$species[i] == "BLWH") {
-    if (detections$call[i] == "DS") {
-      detections$call[i] <- "BLDS" 
-    }
-  }
-}
-
-# This is getting hung up because there are fin whale detections with NA as the call type, these are from the random forest model and are all 20Hz
-for (i in 1:nrow(detections)) { # correcting this na problem here, changing call type to FWPLS
-  if (detections$species[i] == "FIWH") {
-    if (is.na(detections$call[i])) {
-      detections$call[i] <- "FWPLS"
-    }
-  }
-}
-
-for (i in 1:nrow(detections)) {
-  #Fin
-  if (detections$species[i] == "FIWH") {
-    if (detections$call[i] == "DS") {
-      detections$call[i] <- "FWDS"
-    }
-  }
-}
-
-
-# 'Varied' Multiple species, humpback and blue
-for (i in 1:nrow(detections)) {   
-  #Humpback - HWMIX
-  if (detections$species[i] == "HUWH") {
-    if (detections$call[i] == "Varied") {
-      detections$call[i] <- "HWMIX" 
-    }
-  }
-}
-
-for (i in 1:nrow(detections)) {   
-  #Blue - ADD TO PACM BLMIXNEP
-  if (detections$species[i] == "BLWH") {
-    if (detections$call[i] == "Varied") {
-      detections$call[i] <- "BLMIXNEP" 
-    }
-  }
-}
-
-
-# 'Tonal w/Harm' Multiple species, humpback and sei
-    # Sei event corrected above
-    # Humpback event also mislabeled, corrected here it should be possible sei downsweeps
-for (i in 1:nrow(detections)) {   
-  if (detections$species[i] == "HUWH") {
-    if (detections$call[i] == "Tonal w/Harm") {
-      detections$species[i] <- "SEWH"
-      detections$call[i] <- "SWDS"
-    }
-  }
-}
-
-# 'regular', humpback and gray, this was a mistake. All 'regular' humpback should be grouped into song, social, or mixed (Kaitlin working on this). All gray detections will be potential/undefined
-for (i in 1:nrow(detections)) {
-  if (detections$species[i] == "GRWH") {
-    if (detections$call[i] == "regular") {
-      detections$call[i] <- "GRWHPOT"
-    }
-  }
-}
-
-#Temporarily correcting humpback regular data, waiting for Kaitlin to correct humpback call types
-for (i in 1:nrow(detections)) {
-  if(detections$species[i] == "HUWH") {
-   if(detections$call[i] == "regular") {
-     detections$call[i] <- "HWUND"
-   } 
-  }
-}
-
-```
-
-```{r}
 # Rename call types
 callTypeRename <- tribble(
     ~old, ~new,
-    '20Hz','FWPLS', #Fin 20 Hz
-    'Pulses','FWPLS', #Fin 20 Hz pulses from Liz
-    '40Hz','FWDS', #Fin 40 Hz
-    'Bp 40-50 Hz', 'FWDS', #Fin 40-50 Hz from Liz
-   
-    'clicks/A','ACLICKT', #Pacific White sided clicks
-    'Clicks/A','ACLICKT', #Pacific White sided clicks
-    'clicks/B','BCLICKT', #Pacific White sided clicks
-    'Clicks/B','BCLICKT', #Pacific White sided clicks
+    #Fins
+    '20Hz','FW20HZ',
+    '40Hz','FW40HZ',
+
+    #Blues
+    'A', 'BLANEP',
+    'B', 'BLBNEP',
+    'D', 'BLDNEP',    
     
-    'Slow Clicks','SPSLC', #Sperm whale clicks
-#    '','SPUSC', #Sperm whale clicks
+    #Dolphins
+    'Clicks/A','ACLICKT', 
+    'Clicks/B','BCLICKT', 
+    'Whistles/<10kHz','ODWHIS',   
+    'Whistles/<5kHz','ODWHIS',   
+    'Whistles/>10kHz','ODWHIS',   
+    'Whistles','ODWHIS',   
     
-    'social','HWSOC', #Humpback social calls
-    'song','HWSONG', #Humpback song 
+    #Minkes
+    'Boing', 'MWNEPBOING',
     
+    #Sperm Whale
+    'Slow Clicks','SPSLC', #Sperm whale slow clicks
+#    'Clicks','SPUSC', #Usual clicks, This is corrected below
+    
+    #Humpbacks 
+    'Social','HWSOC', #Humpback social calls
+    'Song','HWSONG', #Humpback song 
+
+    #Sei whales
+    'SWDS', 'SWDS',
+    
+    #Antrho
     'Ship/Broadband','NONBIO', #no PACM species for anthro sounds???
     'Ship/Low Frequency','NONBIO', #no PACM species for anthro sounds???
-    'Ship/Narrowband','NONBIO', #no PACM species for anthro sounds???
+    'Ship/Narrowband','NONBIO' #no PACM species for anthro sounds???
 
-    'Whistle','ODWHIS', #use ODWHIS for all whistles 
-    'Whistles/<10kHz','ODWHIS', #use ODWHIS for all whistles 
-    'Whistles/<5kHz','ODWHIS', #use ODWHIS for all whistles 
-    'Whistles/>10kHz','ODWHIS', #use ODWHIS for all whistles 
-    'whistles','ODWHIS', #use ODWHIS for all whistles 
-    'Whistles','ODWHIS', #use ODWHIS for all whistles 
-
-# Beaked whale call types 
-    '','FMUS',
-    
-# Add to PACM
-    'A NE Pacific','BLANEP', # Blue A call, need to add to PACM
-    'B NE Pacific','BLBNEP', # Blue B call, need to add to PACM
-    'D','BLDNEP', # Blue D call, need to add to PACM
-    'Tonal only','BLTONNEP', #Blue tonal calls from Liz (D call? Cory is checking these events)
-    'B','MWNEPBOING', #Minke boing, need to add to PACM
-    'Boing','MWNEPBOING', #Minke boing, need to add to PACM
-    'CB','MWNEPBOING', #Minke boing cutoff, need to add to PACM
+    # Beaked whale call types 
+#    '','FMUS', # corrected below
 )
 
 #Rename call types
@@ -268,39 +143,95 @@ for(i in 1:nrow(callTypeRename)) {
     detections$call[detections$call == callTypeRename$old[i]] <- callTypeRename$new[i]
 }
 
-#Check call type codes
-sort(unique(detections$call))
+# Rename calls matched to multiple species
+#Correct humpback unidentified calls 
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "HUWH") {
+    if (detections$call[i] == "unidentified") {
+      detections$call[i] <- "HWUND"
+    }
+  }
+}
+#Correct gray unidentified calls 
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "GRWH") {
+    if (detections$call[i] == "unidentified") {
+      detections$call[i] <- "GWUND"
+    }
+  }
+}
 
-#Export data for checking
-#write.csv(detections, file = "detections.csv", row.names = FALSE)
+# Correct sperm whale clicks
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "SPWH") {
+    if (is.na(detections$call[i]) || detections$call[i] == "Clicks") {
+      detections$call[i] <- "SPUSC"
+    }
+  }
+}
+
+# Correct dolphin clicks
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "GRAM" || detections$species[i] == "PWDO" || detections$species[i] == "UNDO") {
+    if (detections$call[i] == "Clicks" || is.na(detections$call[i])) {
+      detections$call[i] <- "ODCLICK"
+    }
+  }
+}
+
+
+# Beaked whale call types all set as FMUS (frequency modulated upsweep)
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "BW43" || detections$species[i] == "BWBB" || detections$species[i] == "BWC" || detections$species[i] == "BWMC" || detections$species[i] == "BWMS" || detections$species[i] == "GOBW" || detections$species[i] == "UNME") {
+    if (is.na(detections$call[i])) {
+      detections$call[i] <- "FMUS"
+    }
+  }
+}
+
+# Set NBHF Call type
+for (i in 1:nrow(detections)) {
+  if (detections$species[i] == "NBHF") {
+    if (is.na(detections$call[i])) {
+      detections$call[i] <- "NBHF"
+    }
+  }
+}
+
+#Check species and call types
+table(detections$species, detections$call)
 ```
 
-
-
-## Convert Times
+## Add end time and convert times
 ```{r}
-detections$UTC <- posixToText(as.POSIXct(detections$UTC, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC'))
+# Add end time 
+detections$UTC <- as.POSIXct(detections$UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
 
+detections$end <- detections$UTC
+
+for (i in 1:nrow(detections)) {
+  detections$end[i] <- detections$end[i] + 3599
+}
+
+detections$UTC <- posixToText(as.POSIXct(detections$UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC'))
 detections$end <- posixToText(as.POSIXct(detections$end, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC'))
-```
 
-
-## Subset Project
-```{r}
-detections <- detections[str_detect(detections$DriftName, "ADRIFT"),]
+for (i in 1:nrow(detections)) {
+  detections$UTC[i] <- paste0(detections$UTC[i],'Z')
+  detections$end[i] <- paste0(detections$end[i],'Z')
+}
 ```
 
 ## Create PACM Dataframe
 ```{r}
 # Add additional PACM Columns
 PACMdetections <- detections %>% 
-  add_column('ANALYSIS_PERIOD_EFFORT_SECONDS' = '86400', 'ANALYSIS_TIME_ZONE' = 'UTC', 'ACOUSTIC_PRESENCE' = '', 'N_VALIDATED_DETECTIONS' = '', 'DETECTION_METHOD' = '', 'PROTOCOL_REFERENCE' = '', 'DETECTION_SOFTWARE_NAME' = '', 'DETECTION_SOFTWARE_VERSION' = '', 'MIN_ANALYSIS_FREQUENCY_RANGE_HZ' = '', 'MAX_ANALYSIS_FREQUENCY_RANGE_HZ' = '', 'ANALYSIS_SAMPLING_RATE_HZ' = '', 'QC_PROCESSING' = 'Archival', 'LOCALIZED_LATITUDE' = '', 'LOCALIZED_LONGITUDE' = '', 'DETECTION_DISTANCE_M' = '', 'LOCALIZATION_DISTANCE_METHOD' = '', 'LOCALIZATION_DISTANCE_PROTOCOL' = '')
+  add_column('ANALYSIS_PERIOD_EFFORT_SECONDS' = '86400', 'ANALYSIS_TIME_ZONE' = 'UTC', 'ACOUSTIC_PRESENCE' = '', 'N_VALIDATED_DETECTIONS' = '', 'DETECTION_METHOD' = '', 'PROTOCOL_REFERENCE' = '', 'DETECTION_SOFTWARE_NAME' = '', 'DETECTION_SOFTWARE_VERSION' = '', 'MIN_ANALYSIS_FREQUENCY_RANGE_HZ' = '', 'MAX_ANALYSIS_FREQUENCY_RANGE_HZ' = '', 'QC_PROCESSING' = 'Archival', 'LOCALIZED_LATITUDE' = '', 'LOCALIZED_LONGITUDE' = '', 'DETECTION_DISTANCE_M' = '', 'LOCALIZATION_DISTANCE_METHOD' = '', 'LOCALIZATION_DISTANCE_PROTOCOL' = '')
 
 # Reorder Columns
-PACMdetections <- PACMdetections[, c(5,1,2,6,7,3,8,9,4,10,11,12,13,14,15,16,17,18,19,20,21,22)]
+PACMdetections <- PACMdetections[, c(4,1,5,6,7,2,8,9,3,10,11,12,13,14,15,16,17,18,19,20,21)]
 
 # Rename Columns
-
 PACMdetections <- PACMdetections %>%
   dplyr::rename(UNIQUE_ID = DriftName, ANALYSIS_PERIOD_START_DATETIME = UTC, ANALYSIS_PERIOD_END_DATETIME = end, SPECIES_CODE = species, CALL_TYPE_CODE = call)
 ```
@@ -311,13 +242,26 @@ Need to match current detections 'UNIQUE_ID' to the metadata 'UNIQUE_ID'
 # Read in metadata
 metadata <- read.csv(here::here('PACM Worksheets/ADRIFT/SWFSC_20240410_METADATA.csv'))
 
+# ADRIFT 
+metaFactorName <- as.factor(metadata$UNIQUE_ID)
+PACMdetections$UNIQUE_ID = as.factor(PACMdetections$UNIQUE_ID)
+levels(PACMdetections$UNIQUE_ID) = metaFactorName
 
+# PASCAL
+
+# CCES
 ```
 
 ## Pull Sampling Rate from Metadata
 ```{r}
-# Need to figure out how to match get this from the metadata
-#PACMdetections$ANALYSIS_SAMPLING_RATE_HZ[i] == "From Metadata" 
+metadata$ANALYSIS_SAMPLING_RATE_HZ <- metadata$SAMPLING_RATE_HZ
+# NEED TO FIX THIS MERGE
+PACMdetections = merge(PACMdetections,
+                       metadata[,c('UNIQUE_ID','ANALYSIS_SAMPLING_RATE_HZ')],
+                       by = 'UNIQUE_ID', all.x = TRUE)
+
+# Reorder Columns
+PACMdetections <- PACMdetections[, c(4,1,5,6,7,2,8,9,3,10,11,12,13,14,15,22,16,17,18,19,20,21)]
 ```
 
 
