@@ -64,7 +64,7 @@ names(deployDetails)[10] <- "Status"
 deployDetails <- subset(deployDetails, Status == "Complete")
 
 #Subset only ADRIFT, CCES, and PASCAL
-deployDetails <- subset(deployDetails, Project == "ADRIFT")
+deployDetails <- subset(deployDetails, Project == "PASCAL")
 ```
 
 # Clean and subset data
@@ -96,12 +96,15 @@ PACM_GPS <- subset(PACM_GPS, select = c('UNIQUE_ID', 'DATETIME', 'LATITUDE', 'LO
 ## Correct Date/Time
 ```{r}
 PACM_GPS$DATETIME <- posixToText(as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC'))
+for (i in 1:nrow(PACM_GPS)) {
+  PACM_GPS$DATETIME[i] <- paste0(PACM_GPS$DATETIME[i],'Z')
+}
 ```
 
 # Export GPS Data
 ```{r}
-SWFSC_20240410_GPSDATA.csv <- write.csv(PACM_GPS)
+#SWFSC_20240410_GPSDATA.csv <- write.csv(PACM_GPS)
 
-write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/CCES/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
+write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/PASCAL/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
 ```
 

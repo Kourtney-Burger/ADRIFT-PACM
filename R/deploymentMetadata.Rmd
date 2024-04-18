@@ -27,12 +27,12 @@ DepDir <- here::here()
 # Read in Data
 ## Read in Deployment Details
 ```{r}
-deployDetails <- read.csv(here('R/deploymentDetails/Deployment Details - deployDetails.csv'))
+deployDetails <- read.csv(here::here('R/deploymentDetails/Deployment Details - deployDetails.csv'))
 ```
 
 ## Read in PACM Deployment Templates
 ```{r}
-Template <- xlsx::read.xlsx(here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Metadata_Template')
+Template <- xlsx::read.xlsx(here::here('PACM Templates/SWFSC_YYYYMMDD_METADATA.xlsx'), sheetName = 'Metadata_Template')
 ```
 
 # Taiki's helper function for dates
@@ -52,14 +52,14 @@ names(deployDetails)[10] <- "Status"
 deployDetails <- subset(deployDetails, Status == "Complete")
 
 #Subset only ADRIFT, CCES, and PASCAL
-deployDetails <- subset(deployDetails, Project == "CCES")
+deployDetails <- subset(deployDetails, Project == "ADRIFT")
 
 #Subset usable fields from deployment details
 dep <- subset(deployDetails, select = c('Data_ID', 'Project', 'Instrument_ID', 'Site', 'Type', 'SensorNumber_1', 'Data_Start', 'Data_End', 'Deployment_Depth_m.', 'SampleRate_kHz', 'RecordingDuration_m', 'RecordingInterval_m'))
 
 #Add additional columns
 dep <- dep %>%
-  add_column(DATA_POC_NAME = 'Shannon Rankin', DATA_POC_AFFILIATION = 'NOAA SWFSC', DATA_POC_EMAIL = 'shannon.rankin@noaa.gov', STATIONARY_OR_MOBILE = 'Mobile', PLATFORM_TYPE = 'Drifting-buoy', CHANNEL = '1', SOUNDFILES_TIMEZONE = 'UTC', LATITUDE = '', LONGITUDE = '', WATER_DEPTH_METERS = '', SAMPLE_BITS = '16', SUBMITTER_NAME = 'Kourtney Burger', SUBMITTER_AFFILIATION = 'NOAA SWFSC', SUBMITTER_EMAIL = 'kourtney.burger@noaa.gov', SUBMISSION_DATE = '2024-04-10T10:00:00')
+  add_column(DATA_POC_NAME = 'Shannon Rankin', DATA_POC_AFFILIATION = 'NOAA SWFSC', DATA_POC_EMAIL = 'shannon.rankin@noaa.gov', STATIONARY_OR_MOBILE = 'Mobile', PLATFORM_TYPE = 'Drifting-buoy', CHANNEL = '1', SOUNDFILES_TIMEZONE = 'UTC', LATITUDE = '', LONGITUDE = '', WATER_DEPTH_METERS = '', SAMPLE_BITS = '16', SUBMITTER_NAME = 'Kourtney Burger', SUBMITTER_AFFILIATION = 'NOAA SWFSC', SUBMITTER_EMAIL = 'kourtney.burger@noaa.gov', SUBMISSION_DATE = '2024-04-10T10:00:00Z')
 
 dep$SUBMISSION_DATE <- posixToText(as.POSIXct(dep$SUBMISSION_DATE))
 
@@ -68,7 +68,7 @@ dep <- dep[, c(1,2,13,14,15,16,17,3,4,5,6,18,7,8,19,20,21,22,9,10,11,12,23,24,25
 
 #Rename columns
 dep <- dep %>%
-  rename(UNIQUE_ID = Data_ID, PROJECT = Project, PLATFORM_NO = Instrument_ID, SITE_ID = Site, INSTRUMENT_TYPE = Type, INSTRUMENT_ID = SensorNumber_1, MONITORING_START_DATETIME = Data_Start, MONITORING_END_DATETIME = Data_End, RECORDER_DEPTH_METERS = Deployment_Depth_m., SAMPLING_RATE_HZ = SampleRate_kHz, RECORDING_DURATION_SECONDS = RecordingDuration_m, RECORDING_INTERVAL_SECONDS = RecordingInterval_m)
+  dplyr::rename(UNIQUE_ID = Data_ID, PROJECT = Project, PLATFORM_NO = Instrument_ID, SITE_ID = Site, INSTRUMENT_TYPE = Type, INSTRUMENT_ID = SensorNumber_1, MONITORING_START_DATETIME = Data_Start, MONITORING_END_DATETIME = Data_End, RECORDER_DEPTH_METERS = Deployment_Depth_m., SAMPLING_RATE_HZ = SampleRate_kHz, RECORDING_DURATION_SECONDS = RecordingDuration_m, RECORDING_INTERVAL_SECONDS = RecordingInterval_m)
 ```
 
 ## Create Unique ID
@@ -115,9 +115,13 @@ dep[dep == "ST300HF"] <- "SoundTrap 300 High Frequency"
 ```{r}
 #Convert start date
 dep$MONITORING_START_DATETIME <- posixToText(as.POSIXct(dep$MONITORING_START_DATETIME, format = "%m/%d/%Y %H:%M:%S", tz='UTC'))
-
 #Convert end date
 dep$MONITORING_END_DATETIME <- posixToText(as.POSIXct(dep$MONITORING_END_DATETIME, format = "%m/%d/%Y %H:%M:%S", tz='UTC'))
+
+for (i in 1:nrow(dep)) {
+  dep$MONITORING_START_DATETIME[i] <- paste0(dep$MONITORING_START_DATETIME[i],'Z')
+  dep$MONITORING_END_DATETIME[i] <- paste0(dep$MONITORING_END_DATETIME[i],'Z')
+}
 ```
 
 ## Convert sample rates
@@ -153,10 +157,10 @@ dep$RECORDING_INTERVAL_SECONDS <- dep$RECORDING_INTERVAL_SECONDS*60
 ## Correct Channel
 Some drifts had CH2 analyzed instead of CH1. Correct hydrophone serial number and channel number as necessary
 ```{r}
-
+#This will be done manually
 ```
 
 # Export Metadata
 ```{r}
-write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/CCES/SWFSC_20240415_METADATA.csv", row.names=FALSE)
+write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240415_METADATA.csv", row.names=FALSE)
 ```
