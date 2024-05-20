@@ -162,5 +162,5 @@ Some drifts had CH2 analyzed instead of CH1. Correct hydrophone serial number an
 
 # Export Metadata
 ```{r}
-write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240415_METADATA.csv", row.names=FALSE)
+write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240520_METADATA.csv", row.names=FALSE)
 ```

@@ -54,7 +54,7 @@ detections <- subset(allDetections, select = c('UTC', 'species', 'call', 'DriftN
 
 ## Subset Project
 ```{r}
-detections <- detections[str_detect(detections$DriftName, "ADRIFT"),]
+detections <- detections[str_detect(detections$DriftName, "PASCAL"),]
 ```
 
 ## Convert Species Names to PACM Species Codes (from Taiki)
@@ -205,7 +205,7 @@ table(detections$species, detections$call)
 ## Add end time and convert dates
 ```{r}
 # Add end time 
-detections$UTC <- as.POSIXct(detections$UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC')
+detections$UTC <- as.POSIXct(detections$UTC, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC')
 
 detections$end <- detections$UTC
 
@@ -213,7 +213,7 @@ for (i in 1:nrow(detections)) {
   detections$end[i] <- detections$end[i] + 3599
 }
 
-detections$UTC <- posixToText(as.POSIXct(detections$UTC, format = "%m/%d/%Y %H:%M:%S", tz = 'UTC'))
+detections$UTC <- posixToText(as.POSIXct(detections$UTC, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC'))
 detections$end <- posixToText(as.POSIXct(detections$end, format = "%Y-%m-%d %H:%M:%S", tz = 'UTC'))
 
 for (i in 1:nrow(detections)) {
@@ -240,7 +240,7 @@ PACMdetections <- PACMdetections %>%
 Need to match current detections 'UNIQUE_ID' to the metadata 'UNIQUE_ID'
 ```{r}
 # Read in metadata
-metadata <- read.csv(here::here('PACM Worksheets/ADRIFT/SWFSC_20240415_METADATA.csv'))
+metadata <- read.csv(here::here('PACM Worksheets/PASCAL/SWFSC_20240520_METADATA.csv'))
 
 # ADRIFT 
 metaFactorName <- as.factor(metadata$UNIQUE_ID)
@@ -468,49 +468,49 @@ close(pb) # Close the connection
 ### NOTE DIFFERENT METHODS FOR DIFFERENT PROJECTS
 ```{r}
 # ADRIFT
-for (i in 1:nrow(PACMdetections)) {
-  if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
-    PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
-    PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
-    PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
-    PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
-    PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
-    PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
-    
-    if (PACMdetections$CALL_TYPE_CODE[i] == "FWPLS") { # 20 Hz calls
-      PACMdetections$DETECTION_METHOD[i] <- "PAMGuard Click Detector"
-    }
-    else { # 40 Hz calls
-      PACMdetections$DETECTION_METHOD[i] <- "Manual"
-    }
-  }
-  # Sets the progress bar to the current state
-  setTxtProgressBar(pb, i)
-}
-close(pb) # Close the connection
-
-# CCES/PASCAL
 # for (i in 1:nrow(PACMdetections)) {
 #   if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
 #     PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
-#     PACMdetections$DETECTION_METHOD[i] <- "Manual"
 #     PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
+#     PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
+#     PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
 #     PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
 #     PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
 # 
-#     if (PACMdetections$CALL_TYPE_CODE[i] == "FWDS") { #40 Hz calls
-#       PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
-#       PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
+#     if (PACMdetections$CALL_TYPE_CODE[i] == "FWPLS") { # 20 Hz calls
+#       PACMdetections$DETECTION_METHOD[i] <- "PAMGuard Click Detector"
 #     }
-#     else { # 20 Hz calls
-#       PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "Matlab (Triton)"
-#       PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "1.93.20160524"
+#     else { # 40 Hz calls
+#       PACMdetections$DETECTION_METHOD[i] <- "Manual"
 #     }
 #   }
 #   # Sets the progress bar to the current state
 #   setTxtProgressBar(pb, i)
 # }
 # close(pb) # Close the connection
+
+# CCES/PASCAL
+for (i in 1:nrow(PACMdetections)) {
+  if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
+    PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
+    PACMdetections$DETECTION_METHOD[i] <- "Manual"
+    PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
+    PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
+    PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
+
+    if (PACMdetections$CALL_TYPE_CODE[i] == "FWDS") { #40 Hz calls
+      PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
+      PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
+    }
+    else { # 20 Hz calls
+      PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "Matlab (Triton)"
+      PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "1.93.20160524"
+    }
+  }
+  # Sets the progress bar to the current state
+  setTxtProgressBar(pb, i)
+}
+close(pb) # Close the connection
 ```
 
 ## Anthro? 
@@ -522,5 +522,8 @@ close(pb) # Close the connection
 # PACMdetectionsSubsample <- PACMdetections[1:100000, ]
 # write.csv(PACMdetectionsSubsample, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/Subsample-SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
 
-write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240410_DETECTIONDATA.csv", row.names=FALSE)
+#Exclude NBHF unitl species classifier is ran
+PACMdetections <- PACMdetections[(PACMdetections$SPECIES_CODE != 'NBHF'), ]
+
+write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/PASCAL/SWFSC_20240520_DETECTIONDATA.csv", row.names=FALSE)
 ```
