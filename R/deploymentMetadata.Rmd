@@ -160,7 +160,14 @@ Some drifts had CH2 analyzed instead of CH1. Correct hydrophone serial number an
 #This will be done manually
 ```
 
+## Remove rows for PASCAL
+```{r}
+#Only for PASCAL, remove rows for deployments with extra soundtrap 300
+# rownames(dep) <- 1:nrow(dep)
+# dep <- dep[-c(9, 24, 27, 32), ]
+```
+
 # Export Metadata
 ```{r}
-write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_20240520_METADATA.csv", row.names=FALSE)
+write.csv(dep, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_ADRIFT_20240617_METADATA.csv", row.names=FALSE)
 ```

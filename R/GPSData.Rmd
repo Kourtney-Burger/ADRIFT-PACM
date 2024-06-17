@@ -55,22 +55,32 @@ GPS_files <- list.files(path = GPS_directory,
 PACM_GPS <- do.call("rbind.fill", lapply(GPS_files, read.csv))
 ```
 
-## Read in Deployment Details
-```{r}
-deployDetails <- read.csv(here::here('R/deploymentDetails/Deployment Details - deployDetails.csv'))
+<!-- ## Read in Deployment Details -->
+<!-- ```{r} -->
+<!-- deployDetails <- read.csv(here::here('R/deploymentDetails/Deployment Details - deployDetails.csv')) -->
 
-# Remove unusable drifts
-names(deployDetails)[10] <- "Status"
-deployDetails <- subset(deployDetails, Status == "Complete")
+<!-- # Remove unusable drifts -->
+<!-- names(deployDetails)[10] <- "Status" -->
+<!-- deployDetails <- subset(deployDetails, Status == "Complete") -->
 
-#Subset only ADRIFT, CCES, and PASCAL
-deployDetails <- subset(deployDetails, Project == "PASCAL")
-```
+<!-- #Subset only ADRIFT, CCES, and PASCAL -->
+<!-- deployDetails <- subset(deployDetails, Project == "PASCAL") -->
+
+<!-- #Only for PASCAL, remove rows for deployments with extra soundtrap 300 -->
+<!-- rownames(deployDetails) <- 1:nrow(deployDetails) -->
+<!-- deployDetails <- deployDetails[-c(9, 24, 27, 32), ] -->
+<!-- ``` -->
 
 # Clean and subset data
 ## Subset data
 ```{r}
-PACM_GPS <- subset(PACM_GPS, select = c('DriftName', 'UTC', 'Latitude', 'Longitude', 'DeploymentSite'))
+PACM_GPS <- subset(PACM_GPS, select = c('DriftName', 'UTC', 'Latitude', 'Longitude'))
+
+# Select project
+PACM_GPS <- subset(PACM_GPS, grepl("ADRIFT", DriftName))
+
+# For pascal only, remove PASCAL 14 - we did not analyze this drift
+# PACM_GPS <- subset(PACM_GPS, DriftName != 'PASCAL_014')
 ```
 
 ## Rename Columns
@@ -79,18 +89,29 @@ PACM_GPS <- PACM_GPS %>%
   dplyr::rename(UNIQUE_ID = DriftName, DATETIME = UTC, LATITUDE = Latitude, LONGITUDE = Longitude)
 ```
 
-## Create Unique ID
+<!-- ## Create Unique ID -->
+<!-- ```{r} -->
+<!-- PACM_GPS$Month_Yr <- as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC') -->
+
+<!-- PACM_GPS$Month_Yr <- format(PACM_GPS$Month_Yr,"%Y%m") -->
+
+<!-- # Correct Site Name -->
+<!-- PACM_GPS[PACM_GPS == "Crescent City"] <- "HUM" -->
+
+<!-- PACM_GPS$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', PACM_GPS$DeploymentSite, '_', PACM_GPS$Month_Yr, '_', PACM_GPS$UNIQUE_ID) -->
+
+<!-- PACM_GPS <- subset(PACM_GPS, select = c('UNIQUE_ID', 'DATETIME', 'LATITUDE', 'LONGITUDE')) -->
+<!-- ``` -->
+
+## Rename UNIQUE_ID
+Need to match current detections 'UNIQUE_ID' to the metadata 'UNIQUE_ID'
 ```{r}
-PACM_GPS$Month_Yr <- as.POSIXct(PACM_GPS$DATETIME, format = "%Y-%m-%d %H:%M:%S", tz='UTC')
+# Read in metadata
+metadata <- read.csv(here::here('PACM Worksheets/ADRIFT/SWFSC_ADRIFT_20240617_METADATA.csv'))
 
-PACM_GPS$Month_Yr <- format(PACM_GPS$Month_Yr,"%Y%m")
-
-# Correct Site Name
-PACM_GPS[PACM_GPS == "Crescent City"] <- "HUM"
-
-PACM_GPS$UNIQUE_ID <- paste0('SWFSC_', 'NEPac-', PACM_GPS$DeploymentSite, '_', PACM_GPS$Month_Yr, '_', PACM_GPS$UNIQUE_ID)
-
-PACM_GPS <- subset(PACM_GPS, select = c('UNIQUE_ID', 'DATETIME', 'LATITUDE', 'LONGITUDE'))
+metaFactorName <- as.factor(metadata$UNIQUE_ID)
+PACM_GPS$UNIQUE_ID = as.factor(PACM_GPS$UNIQUE_ID)
+levels(PACM_GPS$UNIQUE_ID) = metaFactorName
 ```
 
 ## Correct Date/Time
@@ -103,8 +124,6 @@ for (i in 1:nrow(PACM_GPS)) {
 
 # Export GPS Data
 ```{r}
-#SWFSC_20240410_GPSDATA.csv <- write.csv(PACM_GPS)
-
-write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/PASCAL/SWFSC_20240410_GPSDATA.csv", row.names=FALSE)
+write.csv(PACM_GPS, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_ADRIFT_20240617_GPSDATA.csv", row.names=FALSE)
 ```
 
