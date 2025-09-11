@@ -48,13 +48,15 @@ allDetections <- read.csv(here::here('R/detections/AllDetectionsHourly.csv'))
 
 ##Subset Detection Data
 ```{r}
+#Remove pascal 14 detections
+allDetections <- subset(allDetections, DriftName != 'PASCAL_014')
 # Subset PACM fields
 detections <- subset(allDetections, select = c('UTC', 'species', 'call', 'DriftName'))
 ```
 
 ## Subset Project
 ```{r}
-detections <- detections[str_detect(detections$DriftName, "ADRIFT"),]
+detections <- detections[str_detect(detections$DriftName, "CCES"),]
 ```
 
 ## Convert Species Names to PACM Species Codes (from Taiki)
@@ -243,7 +245,7 @@ Need to match current detections 'UNIQUE_ID' to the metadata 'UNIQUE_ID'
 # PACMdetections <- subset(PACMdetections, UNIQUE_ID != "PASCAL_014")
 
 # Read in metadata
-metadata <- read.csv(here::here('PACM Worksheets/ADRIFT/SWFSC_ADRIFT_20240617_METADATA.csv'))
+metadata <- read.csv(here::here('PACM Worksheets/CCES/SWFSC_CCES_20240617_METADATA.csv'))
 
 metaFactorName <- as.factor(metadata$UNIQUE_ID)
 PACMdetections$UNIQUE_ID = as.factor(PACMdetections$UNIQUE_ID)
@@ -271,7 +273,7 @@ SampMetadata <- SampMetadata %>%
 
 for (i in 1:nrow(SampMetadata)) {
   if (SampMetadata$Ratio[i] == '1') {
-    SampMetadata$ANALYSIS_PERIOD_EFFORT_SECONDS[i] <- 86400
+    SampMetadata$ANALYSIS_PERIOD_EFFORT_SECONDS[i] <- 3600 #This is continuous data, i.e. 3600 seconds = 1 hour
   }
   else {
     SampMetadata$ANALYSIS_PERIOD_EFFORT_SECONDS[i] <- as.character(as.numeric(SampMetadata$Ratio[i])*3600)
@@ -402,6 +404,12 @@ for (i in 1:nrow(PACMdetections)) {
     PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.02.09f"
     PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
     PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "384000"
+    if (PACMdetections$ANALYSIS_SAMPLING_RATE_HZ[i] <= 288000) {
+      PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- PACMdetections$ANALYSIS_SAMPLING_RATE_HZ[i]
+    }
+    else {
+      PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "384000"
+    }
   }
   # Sets the progress bar to the current state
   setTxtProgressBar(pb, i)
@@ -448,67 +456,74 @@ close(pb) # Close the connection
 ## Beaked Whales - Anne
 ```{r}
 for (i in 1:nrow(PACMdetections)) {
-  if (PACMdetections$SPECIES_CODE[i] == "GOBW" || PACMdetections$SPECIES_CODE[i] == "BB" || PACMdetections$SPECIES_CODE[i] == "BW43" || PACMdetections$SPECIES_CODE[i] == "BWC" || PACMdetections$SPECIES_CODE[i] == "MC" || PACMdetections$SPECIES_CODE[i] == "MS" || PACMdetections$SPECIES_CODE[i] == "UNME") { 
+  if (PACMdetections$SPECIES_CODE[i] == "GOBW" || PACMdetections$SPECIES_CODE[i] == "BB" || PACMdetections$SPECIES_CODE[i] == "BW43" || PACMdetections$SPECIES_CODE[i] == "BWC" || PACMdetections$SPECIES_CODE[i] == "MC" || PACMdetections$SPECIES_CODE[i] == "MS" || PACMdetections$SPECIES_CODE[i] == "UNME" || PACMdetections$SPECIES_CODE[i] == "BWBB" || PACMdetections$SPECIES_CODE[i] == "BWMC" || PACMdetections$SPECIES_CODE[i] == "BWMS") { 
     PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
     PACMdetections$DETECTION_METHOD[i] <- "PAMGuard Click Detector"
     PACMdetections$PROTOCOL_REFERENCE[i] <- "Simonis et al 2020 (https://swfsc-publications.fisheries.noaa.gov/publications/CR/2020/2020Simonis3.pdf) "
     PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
     PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.02.09f"
     PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
-    PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "288000"
+    
+    if (PACMdetections$ANALYSIS_SAMPLING_RATE_HZ[i] < 288000) {
+      PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- PACMdetections$ANALYSIS_SAMPLING_RATE_HZ[i]
+    }
+    else {
+      PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "288000"
+    }
   }
   # Sets the progress bar to the current state
   setTxtProgressBar(pb, i)
 }
 close(pb) # Close the connection
 ```
+
 ## Fin - Cory/Liz  
 ### NOTE DIFFERENT METHODS FOR DIFFERENT PROJECTS
 ```{r}
 # ADRIFT
-for (i in 1:nrow(PACMdetections)) {
-  if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
-    PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
-    PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
-    PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
-    PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
-    PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
-    PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
-
-    if (PACMdetections$CALL_TYPE_CODE[i] == "FWPLS") { # 20 Hz calls
-      PACMdetections$DETECTION_METHOD[i] <- "PAMGuard Click Detector"
-    }
-    else { # 40 Hz calls
-      PACMdetections$DETECTION_METHOD[i] <- "Manual"
-    }
-  }
-  # Sets the progress bar to the current state
-  setTxtProgressBar(pb, i)
-}
-close(pb) # Close the connection
-
-# CCES/PASCAL
 # for (i in 1:nrow(PACMdetections)) {
 #   if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
 #     PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
-#     PACMdetections$DETECTION_METHOD[i] <- "Manual"
 #     PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
+#     PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
+#     PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
 #     PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
 #     PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
 # 
-#     if (PACMdetections$CALL_TYPE_CODE[i] == "FWDS") { #40 Hz calls
-#       PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
-#       PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
+#     if (PACMdetections$CALL_TYPE_CODE[i] == "FWPLS") { # 20 Hz calls
+#       PACMdetections$DETECTION_METHOD[i] <- "PAMGuard Click Detector"
 #     }
-#     else { # 20 Hz calls
-#       PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "Matlab (Triton)"
-#       PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "1.93.20160524"
+#     else { # 40 Hz calls
+#       PACMdetections$DETECTION_METHOD[i] <- "Manual"
 #     }
 #   }
 #   # Sets the progress bar to the current state
 #   setTxtProgressBar(pb, i)
 # }
 # close(pb) # Close the connection
+
+# CCES/PASCAL
+for (i in 1:nrow(PACMdetections)) {
+  if (PACMdetections$SPECIES_CODE[i] == "FIWH") {
+    PACMdetections$ACOUSTIC_PRESENCE[i] <- "D"
+    PACMdetections$DETECTION_METHOD[i] <- "Manual"
+    PACMdetections$PROTOCOL_REFERENCE[i] <- "Unpublished"
+    PACMdetections$MIN_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "0"
+    PACMdetections$MAX_ANALYSIS_FREQUENCY_RANGE_HZ[i] <- "250"
+
+    if (PACMdetections$CALL_TYPE_CODE[i] == "FWDS") { #40 Hz calls
+      PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "PAMGuard"
+      PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "2.01.09"
+    }
+    else { # 20 Hz calls
+      PACMdetections$DETECTION_SOFTWARE_NAME[i] <- "Matlab (Triton)"
+      PACMdetections$DETECTION_SOFTWARE_VERSION[i] <- "1.93.20160524"
+    }
+  }
+  # Sets the progress bar to the current state
+  setTxtProgressBar(pb, i)
+}
+close(pb) # Close the connection
 ```
 
 ## Anthro? 
@@ -523,5 +538,5 @@ close(pb) # Close the connection
 #Exclude NBHF until species classifier is ran
 #PACMdetections <- PACMdetections[(PACMdetections$SPECIES_CODE != 'NBHF'), ]
 
-write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/PACM Worksheets/ADRIFT/SWFSC_ADRIFT_20240617_DETECTIONDATA.csv", row.names=FALSE)
+write.csv(PACMdetections, "~/GitHub/ADRIFT-PACM/SWFSC_CCES_20240814_DETECTIONDATA.csv", row.names=FALSE)
 ```
