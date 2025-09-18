@@ -1,0 +1,319 @@
+organization_code,device_code,device_type_code,device_manufacturer,device_model_number,device_serial_number,device_json
+SWFSC,SoundTrap-5990,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,5990,NA
+SWFSC,SoundTrap-6537,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,6537,"{""GAIN"":{""HIGH"":176.8,""LOW"":189.5}}"
+SWFSC,SoundTrap-6539,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,6539,"{""GAIN"":{""HIGH"":176.6,""LOW"":189.1}}"
+SWFSC,SoundTrap-6541,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,6541,"{""GAIN"":{""HIGH"":175.7,""LOW"":189.9}}"
+SWFSC,SoundTrap-201883689,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,201883689,"{""GAIN"":{""HIGH"":172.3,""LOW"":184.7}}"
+SWFSC,SoundTrap-1208528927,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,1208528927,"{""GAIN"":{""HIGH"":178,""LOW"":190.7}}"
+SWFSC,SoundTrap-1208791071,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,1208791071,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5296,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5296,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5984,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5984,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5986,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5986,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5987,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5987,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5990,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5990,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5991,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5991,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5992,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5992,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5994,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5994,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1677738025,recording_device,Ocean Instruments,SoundTrap 4300,1677738025,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1543770129,recording_device,Ocean Instruments,SoundTrap 4300,1543770129,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1544081436,recording_device,Ocean Instruments,SoundTrap 4300,1544081436,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1678016538,recording_device,Ocean Instruments,SoundTrap 4300,1678016538,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1636,recording_device,Ocean Instruments,SoundTrap 500 High Frequency,1636,"{""SENSITIVITY"":-1.8}"
+SWFSC,SoundTrap-4915,recording_device,Ocean Instruments,SoundTrap 500 High Frequency,4915,NA
+SWFSC,SoundTrap-5288,recording_device,Ocean Instruments,SoundTrap 500 High Frequency,5288,"{""SENSITIVITY"":-1.8}"
+SWFSC,SoundTrap-6664,recording_device,Ocean Instruments,SoundTrap 640,6664,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7934,recording_device,Ocean Instruments,SoundTrap 640,7934,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7951,recording_device,Ocean Instruments,SoundTrap 640,7951,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7936,recording_device,Ocean Instruments,SoundTrap 640,7936,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7950,recording_device,Ocean Instruments,SoundTrap 640,7950,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7930,recording_device,Ocean Instruments,SoundTrap 640,7930,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7952,recording_device,Ocean Instruments,SoundTrap 640,7952,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7953,recording_device,Ocean Instruments,SoundTrap 640,7953,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6655,recording_device,Ocean Instruments,SoundTrap 640,6655,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6667,recording_device,Ocean Instruments,SoundTrap 640,6667,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7935,recording_device,Ocean Instruments,SoundTrap 640,7935,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7939,recording_device,Ocean Instruments,SoundTrap 640,7939,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6663,recording_device,Ocean Instruments,SoundTrap 640,6663,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6665,recording_device,Ocean Instruments,SoundTrap 640,6665,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-8595,recording_device,Ocean Instruments,SoundTrap 640,8595,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7517,recording_device,Ocean Instruments,SoundTrap 640,7517,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7518,recording_device,Ocean Instruments,SoundTrap 640,7518,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7519,recording_device,Ocean Instruments,SoundTrap 640,7519,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7520,recording_device,Ocean Instruments,SoundTrap 640,7520,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7521,recording_device,Ocean Instruments,SoundTrap 640,7521,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7931,recording_device,Ocean Instruments,SoundTrap 640,7931,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7932,recording_device,Ocean Instruments,SoundTrap 640,7932,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-7938,recording_device,Ocean Instruments,SoundTrap 640,7938,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1208537119,recording_device,Ocean Instruments,SoundTrap 300 High Frequency,1208537119,"{""GAIN"":{""HIGH"":178.3,""LOW"":190.8}}"
+SWFSC,SoundTrap-5985,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5985,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5297,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5297,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5318,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5318,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5988,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5988,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-5989,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,5989,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-1208786975,recording_device,Ocean Instruments,SoundTrap 4300 High Frequency,1208786975,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6666,recording_device,Ocean Instruments,SoundTrap 640,6666,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6670,recording_device,Ocean Instruments,SoundTrap 640,6670,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6672,recording_device,Ocean Instruments,SoundTrap 640,6672,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6673,recording_device,Ocean Instruments,SoundTrap 640,6673,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6668,recording_device,Ocean Instruments,SoundTrap 640,6668,"{""SENSITIVITY"":-4}"
+SWFSC,SoundTrap-6669,recording_device,Ocean Instruments,SoundTrap 640,6669,"{""SENSITIVITY"":-4}"
+SWFSC,HTI_856001,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856001,"{""SENSITIVITY"":-160.8}"
+SWFSC,HTI_856001,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856001,"{""SENSITIVITY"":-160.8}"
+SWFSC,HTI_856002,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856002,"{""SENSITIVITY"":-160.8}"
+SWFSC,HTI_856003,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856003,"{""SENSITIVITY"":-161.1}"
+SWFSC,HTI_856004,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856004,"{""SENSITIVITY"":-161.2}"
+SWFSC,HTI_856005,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856005,"{""SENSITIVITY"":-161.2}"
+SWFSC,HTI_856006,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856006,"{""SENSITIVITY"":-161}"
+SWFSC,HTI_856007,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856007,"{""SENSITIVITY"":-160.9}"
+SWFSC,HTI_856008,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856008,"{""SENSITIVITY"":-161}"
+SWFSC,HTI_856009,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856009,"{""SENSITIVITY"":-160.7}"
+SWFSC,HTI_856010,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856010,"{""SENSITIVITY"":-180.9}"
+SWFSC,HTI_856011,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856011,"{""SENSITIVITY"":-180.8}"
+SWFSC,HTI_856012,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856012,"{""SENSITIVITY"":-180.8}"
+SWFSC,HTI_856016,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856016,"{""SENSITIVITY"":-181.6}"
+SWFSC,HTI_856017,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856017,"{""SENSITIVITY"":-181.4}"
+SWFSC,HTI_856022,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856022,"{""SENSITIVITY"":-181.6}"
+SWFSC,HTI_856023,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856023,"{""SENSITIVITY"":-181.6}"
+SWFSC,HTI_856024,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856024,"{""SENSITIVITY"":-181.8}"
+SWFSC,HTI_856025,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856025,"{""SENSITIVITY"":-181.6}"
+SWFSC,HTI_856026,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856026,"{""SENSITIVITY"":-181.1}"
+SWFSC,HTI_856027,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856027,"{""SENSITIVITY"":-181}"
+SWFSC,HTI_856028,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856028,"{""SENSITIVITY"":-158.8}"
+SWFSC,HTI_856039,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856039,"{""SENSITIVITY"":-165.2}"
+SWFSC,HTI_856040,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856040,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_856041,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856041,"{""SENSITIVITY"":-164.5}"
+SWFSC,HTI_856042,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856042,"{""SENSITIVITY"":-164.6}"
+SWFSC,HTI_856043,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856043,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_856044,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856044,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_856045,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856045,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_856046,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856046,"{""SENSITIVITY"":-165.2}"
+SWFSC,HTI_856047,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856047,"{""SENSITIVITY"":-154.6}"
+SWFSC,HTI_856048,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856048,"{""SENSITIVITY"":-155.6}"
+SWFSC,HTI_856049,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856049,"{""SENSITIVITY"":-154.5}"
+SWFSC,HTI_856050,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856050,"{""SENSITIVITY"":-154.5}"
+SWFSC,HTI_856051,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856051,"{""SENSITIVITY"":-154.7}"
+SWFSC,HTI_856052,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856052,"{""SENSITIVITY"":-154.7}"
+SWFSC,HTI_856053,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856053,"{""SENSITIVITY"":-154.7}"
+SWFSC,HTI_856054,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856054,"{""SENSITIVITY"":-154.6}"
+SWFSC,HTI_856055,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856055,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856056,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856056,"{""SENSITIVITY"":-164.8}"
+SWFSC,HTI_856057,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856057,"{""SENSITIVITY"":-165.2}"
+SWFSC,HTI_856058,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856058,"{""SENSITIVITY"":-165.2}"
+SWFSC,HTI_856059,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856059,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856060,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856060,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856061,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856061,"{""SENSITIVITY"":-165.4}"
+SWFSC,HTI_856062,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856062,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_856063,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856063,"{""SENSITIVITY"":-164.8}"
+SWFSC,HTI_856064,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856064,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856065,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856065,"{""SENSITIVITY"":-164.9}"
+SWFSC,HTI_856066,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856066,"{""SENSITIVITY"":-165.2}"
+SWFSC,HTI_856067,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856067,"{""SENSITIVITY"":-164.9}"
+SWFSC,HTI_856068,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856068,"{""SENSITIVITY"":-165.1}"
+SWFSC,HTI_856073,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856073,"{""SENSITIVITY"":-154.8}"
+SWFSC,HTI_856093,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856093,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856094,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856094,"{""SENSITIVITY"":-154.8}"
+SWFSC,HTI_856095,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856095,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856096,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856096,"{""SENSITIVITY"":-155.6}"
+SWFSC,HTI_856097,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856097,"{""SENSITIVITY"":-155.6}"
+SWFSC,HTI_856098,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856098,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856099,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856099,"{""SENSITIVITY"":-155.6}"
+SWFSC,HTI_856100,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856100,"{""SENSITIVITY"":-155.5}"
+SWFSC,HTI_856101,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856101,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856115,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856115,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856116,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856116,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856117,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856117,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856118,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856118,"{""SENSITIVITY"":-165.7}"
+SWFSC,HTI_856119,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856119,"{""SENSITIVITY"":-165.5}"
+SWFSC,HTI_856120,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856120,"{""SENSITIVITY"":-165.8}"
+SWFSC,HTI_856121,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856121,"{""SENSITIVITY"":-165.8}"
+SWFSC,HTI_856122,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856122,"{""SENSITIVITY"":-155.6}"
+SWFSC,HTI_856123,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856123,"{""SENSITIVITY"":-165.1}"
+SWFSC,HTI_856124,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856124,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856125,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856125,"{""SENSITIVITY"":-164.8}"
+SWFSC,HTI_856126,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856126,"{""SENSITIVITY"":-165.1}"
+SWFSC,HTI_856127,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856127,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856128,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856128,"{""SENSITIVITY"":-164.9}"
+SWFSC,HTI_856129,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856129,"{""SENSITIVITY"":-165.1}"
+SWFSC,HTI_856134,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856134,"{""SENSITIVITY"":-155.7}"
+SWFSC,HTI_856135,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856135,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856136,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856136,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856137,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856137,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856138,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856138,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856139,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856139,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856140,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856140,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856141,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856141,"{""SENSITIVITY"":-155}"
+SWFSC,HTI_856142,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856142,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856143,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856143,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856144,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856144,"{""SENSITIVITY"":-159.9}"
+SWFSC,HTI_856145,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856145,"{""SENSITIVITY"":-160.1}"
+SWFSC,HTI_856146,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856146,"{""SENSITIVITY"":-160.1}"
+SWFSC,HTI_856147,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856147,"{""SENSITIVITY"":-160.1}"
+SWFSC,HTI_856148,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856148,"{""SENSITIVITY"":-160.2}"
+SWFSC,HTI_856149,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856149,"{""SENSITIVITY"":-159.9}"
+SWFSC,HTI_856150,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856150,"{""SENSITIVITY"":-160.3}"
+SWFSC,HTI_856151,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856151,"{""SENSITIVITY"":-160.3}"
+SWFSC,HTI_856152,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856152,"{""SENSITIVITY"":-160.2}"
+SWFSC,HTI_856153,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856153,"{""SENSITIVITY"":-160.2}"
+SWFSC,HTI_856154,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856154,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856155,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856155,"{""SENSITIVITY"":-155.5}"
+SWFSC,HTI_856156,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856156,"{""SENSITIVITY"":-155.2}"
+SWFSC,HTI_856157,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856157,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856158,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856158,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856159,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856159,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856160,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856160,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856161,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856161,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856162,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856162,"{""SENSITIVITY"":856097}"
+SWFSC,HTI_856163,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856163,"{""SENSITIVITY"":-155.5}"
+SWFSC,HTI_856164,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856164,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856165,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856165,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856166,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856166,"{""SENSITIVITY"":-159.3}"
+SWFSC,HTI_856167,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856167,"{""SENSITIVITY"":-159.8}"
+SWFSC,HTI_856168,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856168,"{""SENSITIVITY"":-159.6}"
+SWFSC,HTI_856169,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856169,"{""SENSITIVITY"":-159.5}"
+SWFSC,HTI_856170,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856170,"{""SENSITIVITY"":-159.8}"
+SWFSC,HTI_856171,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856171,"{""SENSITIVITY"":-159.7}"
+SWFSC,HTI_856172,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856172,"{""SENSITIVITY"":-159.7}"
+SWFSC,HTI_856173,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856173,"{""SENSITIVITY"":-159.5}"
+SWFSC,HTI_856174,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856174,"{""SENSITIVITY"":-159.6}"
+SWFSC,HTI_856175,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856175,"{""SENSITIVITY"":-159.9}"
+SWFSC,HTI_856176,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856176,"{""SENSITIVITY"":-159.6}"
+SWFSC,HTI_856177,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856177,"{""SENSITIVITY"":-159.8}"
+SWFSC,HTI_856178,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856178,"{""SENSITIVITY"":-155.3}"
+SWFSC,HTI_856179,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856179,"{""SENSITIVITY"":-155.8}"
+SWFSC,HTI_856180,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856180,"{""SENSITIVITY"":-155.4}"
+SWFSC,HTI_856181,hydrophone-individual,"High Tech, Inc.",HTI-92-WB,856181,"{""SENSITIVITY"":-155.1}"
+SWFSC,HTI_856182,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856182,"{""SENSITIVITY"":-159.9}"
+SWFSC,HTI_856183,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856183,"{""SENSITIVITY"":-160.1}"
+SWFSC,HTI_856184,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856184,"{""SENSITIVITY"":-159.8}"
+SWFSC,HTI_856185,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856185,"{""SENSITIVITY"":-159.6}"
+SWFSC,HTI_856196,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856196,"{""SENSITIVITY"":-165}"
+SWFSC,HTI_856197,hydrophone-individual,"High Tech, Inc.",HTI-99-HF,856197,"{""SENSITIVITY"":-164.7}"
+SWFSC,HTI_871002,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871002,"{""SENSITIVITY"":-180.9}"
+SWFSC,HTI_871003,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871003,"{""SENSITIVITY"":-180.7}"
+SWFSC,HTI_871004,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871004,"{""SENSITIVITY"":-180.6}"
+SWFSC,HTI_871005,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871005,"{""SENSITIVITY"":-180.8}"
+SWFSC,HTI_871006,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871006,"{""SENSITIVITY"":-180.6}"
+SWFSC,HTI_871007,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871007,"{""SENSITIVITY"":-180.7}"
+SWFSC,HTI_871008,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871008,"{""SENSITIVITY"":-180.4}"
+SWFSC,HTI_871009,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871009,"{""SENSITIVITY"":-180.7}"
+SWFSC,HTI_871010,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871010,"{""SENSITIVITY"":-181}"
+SWFSC,HTI_871011,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871011,"{""SENSITIVITY"":""NA""}"
+SWFSC,HTI_871012,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871012,"{""SENSITIVITY"":-180.4}"
+SWFSC,HTI_871013,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871013,"{""SENSITIVITY"":-180.6}"
+SWFSC,HTI_871014,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871014,"{""SENSITIVITY"":-180.6}"
+SWFSC,HTI_871015,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,871015,"{""SENSITIVITY"":-180.7}"
+SWFSC,HTI_856018-3v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856018-3v,"{""SENSITIVITY"":-181.7}"
+SWFSC,HTI_856018-9v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856018-9v,"{""SENSITIVITY"":-181}"
+SWFSC,HTI_856019-3v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856019-3v,"{""SENSITIVITY"":-181.4}"
+SWFSC,HTI_856019-9v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856019-9v,"{""SENSITIVITY"":-181.2}"
+SWFSC,HTI_856020-3v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856020-3v,"{""SENSITIVITY"":-181.7}"
+SWFSC,HTI_856020-9v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856020-9v,"{""SENSITIVITY"":-181}"
+SWFSC,HTI_856021-3v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856021-3v,"{""SENSITIVITY"":-181.7}"
+SWFSC,HTI_856021-9v,hydrophone-individual,"High Tech, Inc.",HTI-96-MIN,856021-9v,"{""SENSITIVITY"":-180.8}"
+SWFSC,satellite-tracker_IES-904894,satellite-tracker,SPOT LLC,SPOT,IES-904894,
+SWFSC,satellite-tracker_SO-135,satellite-tracker,Globalstar,SmartOne Solar,SO-135,
+SWFSC,satellite-tracker_SO-296,satellite-tracker,Globalstar,SmartOne Solar,SO-296,
+SWFSC,satellite-tracker_SO-305,satellite-tracker,Globalstar,SmartOne Solar,SO-305,
+SWFSC,satellite-tracker_SO-359,satellite-tracker,Globalstar,SmartOne Solar,SO-359,
+SWFSC,satellite-tracker_SO-506,satellite-tracker,Globalstar,SmartOne Solar,SO-506,
+SWFSC,satellite-tracker_SO-533,satellite-tracker,Globalstar,SmartOne Solar,SO-533,
+SWFSC,satellite-tracker_SO-588,satellite-tracker,Globalstar,SmartOne Solar,SO-588,
+SWFSC,satellite-tracker_SO-602,satellite-tracker,Globalstar,SmartOne Solar,SO-602,
+SWFSC,satellite-tracker_SO-638,satellite-tracker,Globalstar,SmartOne Solar,SO-638,
+SWFSC,satellite-tracker_SO-692,satellite-tracker,Globalstar,SmartOne Solar,SO-692,
+SWFSC,satellite-tracker_SO-798,satellite-tracker,Globalstar,SmartOne Solar,SO-798,
+SWFSC,satellite-tracker_E,satellite-tracker,SPOT LLC,SPOT,E,
+SWFSC,satellite-tracker_F,satellite-tracker,SPOT LLC,SPOT,F,
+SWFSC,satellite-tracker_G,satellite-tracker,SPOT LLC,SPOT,G,
+SWFSC,satellite-tracker_J,satellite-tracker,SPOT LLC,SPOT,J,
+SWFSC,satellite-tracker_K,satellite-tracker,SPOT LLC,SPOT,K,
+SWFSC,satellite-tracker_L,satellite-tracker,SPOT LLC,SPOT,L,
+SWFSC,satellite-tracker_R,satellite-tracker,SPOT LLC,SPOT,R,
+SWFSC,satellite-tracker_S,satellite-tracker,SPOT LLC,SPOT,S,
+SWFSC,satellite-tracker_T,satellite-tracker,SPOT LLC,SPOT,T,
+SWFSC,satellite-tracker_SPOT-X,satellite-tracker,SPOT LLC,SPOT,SPOT-X,
+SWFSC,satellite-tracker_AD,satellite-tracker,SPOT LLC,SPOT,AD,
+SWFSC,satellite-tracker_AE,satellite-tracker,SPOT LLC,SPOT,AE,
+SWFSC,satellite-tracker_AF,satellite-tracker,SPOT LLC,SPOT,AF,
+SWFSC,satellite-tracker_AG,satellite-tracker,SPOT LLC,SPOT,AG,
+SWFSC,satellite-tracker_AH,satellite-tracker,SPOT LLC,SPOT,AH,
+SWFSC,satellite-tracker_FB,satellite-tracker,SPOT LLC,SPOT,FB,
+SWFSC,satellite-tracker_U,satellite-tracker,SPOT LLC,SPOT,U,
+SWFSC,satellite-tracker_BA,satellite-tracker,SPOT LLC,SPOT,BA,
+SWFSC,satellite-tracker_BB,satellite-tracker,SPOT LLC,SPOT,BB,
+SWFSC,satellite-tracker_BC,satellite-tracker,SPOT LLC,SPOT,BC,
+SWFSC,satellite-tracker_BD,satellite-tracker,SPOT LLC,SPOT,BD,
+SWFSC,satellite-tracker_BE,satellite-tracker,SPOT LLC,SPOT,BE,
+SWFSC,satellite-tracker_BF,satellite-tracker,SPOT LLC,SPOT,BF,
+SWFSC,satellite-tracker_BG,satellite-tracker,SPOT LLC,SPOT,BG,
+SWFSC,satellite-tracker_BH,satellite-tracker,SPOT LLC,SPOT,BH,
+SWFSC,satellite-tracker_IES-904894,satellite-tracker,SPOT LLC,SPOT,IES-904894,
+SWFSC,satellite-tracker_Gen3C,satellite-tracker,SPOT LLC,SPOT,Gen3C,
+SWFSC,satellite-tracker_Gen3F,satellite-tracker,SPOT LLC,SPOT,Gen3F,
+SWFSC,satellite-tracker_C,satellite-tracker,SPOT LLC,SPOT,C,
+SWFSC,satellite-tracker_D,satellite-tracker,SPOT LLC,SPOT,D,
+SWFSC,satellite-tracker_Z,satellite-tracker,SPOT LLC,SPOT,Z,
+SWFSC,satellite-tracker_AA,satellite-tracker,SPOT LLC,SPOT,AA,
+SWFSC,satellite-tracker_A,satellite-tracker,SPOT LLC,SPOT,A,
+SWFSC,satellite-tracker_B,satellite-tracker,SPOT LLC,SPOT,B,
+SWFSC,satellite-tracker_X,satellite-tracker,SPOT LLC,SPOT,X,
+SWFSC,satellite-tracker_Y,satellite-tracker,SPOT LLC,SPOT,Y,
+SWFSC,satellite-tracker_C,satellite-tracker,SPOT LLC,SPOT,C,
+SWFSC,satellite-tracker_D,satellite-tracker,SPOT LLC,SPOT,D,
+SWFSC,satellite-tracker_Gen3A,satellite-tracker,SPOT LLC,SPOT,Gen3A,
+SWFSC,satellite-tracker_Gen3F,satellite-tracker,SPOT LLC,SPOT,Gen3F,
+SWFSC,satellite-tracker_M,satellite-tracker,SPOT LLC,SPOT,M,
+SWFSC,satellite-tracker_N,satellite-tracker,SPOT LLC,SPOT,N,
+SWFSC,satellite-tracker_P,satellite-tracker,SPOT LLC,SPOT,P,
+SWFSC,satellite-tracker_Q,satellite-tracker,SPOT LLC,SPOT,Q,
+SWFSC,satellite-tracker_SO-331,satellite-tracker,Globalstar,SmartOne Solar,SO-331,
+SWFSC,satellite-tracker_SO-001,satellite-tracker,Globalstar,SmartOne Solar,SO-001,
+SWFSC,satellite-tracker_SO-865,satellite-tracker,Globalstar,SmartOne Solar,SO-865,
+SWFSC,satellite-tracker_SO-866,satellite-tracker,Globalstar,SmartOne Solar,SO-866,
+SWFSC,satellite-tracker_SO-919,satellite-tracker,Globalstar,SmartOne Solar,SO-919,
+SWFSC,satellite-tracker_SO-502,satellite-tracker,Globalstar,SmartOne Solar,SO-502,
+SWFSC,satellite-tracker_SO-083,satellite-tracker,Globalstar,SmartOne Solar,SO-083,
+SWFSC,satellite-tracker_SO-803,satellite-tracker,Globalstar,SmartOne Solar,SO-803,
+SWFSC,satellite-tracker_SO-777,satellite-tracker,Globalstar,SmartOne Solar,SO-777,
+SWFSC,satellite-tracker_SO-082,satellite-tracker,Globalstar,SmartOne Solar,SO-082,
+SWFSC,depth-sensor_U-15771,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15771,
+SWFSC,depth-sensor_U-15694,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15694,
+SWFSC,depth-sensor_U-15712,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15712,
+SWFSC,depth-sensor_U-15801,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15801,
+SWFSC,depth-sensor_U-15865,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15865,
+SWFSC,depth-sensor_U-16396,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16396,
+SWFSC,depth-sensor_U-16409,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16409,
+SWFSC,depth-sensor_U-16431,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16431,
+SWFSC,depth-sensor_U-16528,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16528,
+SWFSC,depth-sensor_U-16536,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16536,
+SWFSC,depth-sensor_U-16546,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16546,
+SWFSC,depth-sensor_U-16557,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16557,
+SWFSC,depth-sensor_U-16595,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16595,
+SWFSC,depth-sensor_U-16597,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16597,
+SWFSC,depth-sensor_U-16636,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16636,
+SWFSC,depth-sensor_U-16647,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16647,
+SWFSC,depth-sensor_U-16656,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16656,
+SWFSC,depth-sensor_U-16658,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16658,
+SWFSC,depth-sensor_U-17434,depth-sensor,ReefNet Inc.,Sensus Ultra,U-17434,
+SWFSC,depth-sensor_U-17438,depth-sensor,ReefNet Inc.,Sensus Ultra,U-17438,
+SWFSC,depth-sensor_U-17439,depth-sensor,ReefNet Inc.,Sensus Ultra,U-17439,
+SWFSC,depth-sensor_U-15518,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15518,
+SWFSC,depth-sensor_U-15756,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15756,
+SWFSC,depth-sensor_U-16530,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16530,
+SWFSC,depth-sensor_U-16639,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16639,
+SWFSC,depth-sensor_U-15720,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15720,
+SWFSC,depth-sensor_U-15741,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15741,
+SWFSC,depth-sensor_U-15756,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15756,
+SWFSC,depth-sensor_U-15815,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15815,
+SWFSC,depth-sensor_U-15817,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15817,
+SWFSC,depth-sensor_U-16627,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16627,
+SWFSC,depth-sensor_U-16835,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16835,
+SWFSC,depth-sensor_U-15737,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15737,
+SWFSC,depth-sensor_U-15761,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15761,
+SWFSC,depth-sensor_U-15766,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15766,
+SWFSC,depth-sensor_U-15771,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15771,
+SWFSC,depth-sensor_U-15968,depth-sensor,ReefNet Inc.,Sensus Ultra,U-15968,
+SWFSC,depth-sensor_U-16408,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16408,
+SWFSC,depth-sensor_U-16549,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16549,
+SWFSC,depth-sensor_U-16583,depth-sensor,ReefNet Inc.,Sensus Ultra,U-16583,
+SWFSC,depth-sensor_U-17435,depth-sensor,ReefNet Inc.,Sensus Ultra,U-17435,
