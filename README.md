@@ -1,4 +1,4 @@
-# Makara - PACM
+# PACM - Makara
 Methods for archiving acoustic detection data through Makara to the [Passive Acoustic Cetacean Map](https://apps-nefsc.fisheries.noaa.gov/pacm/#/). 
 
 ## How to package data
