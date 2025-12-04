@@ -1,5 +1,5 @@
 # Create MAKARA Sheets from Deployment Details
-#Load packages----
+## Load packages----
 library(openxlsx)
 library(googlesheets4)
 library(dplyr)
@@ -9,6 +9,8 @@ library(purrr)
 library(readr)
 library(jsonlite)
 library(tibble)
+library(makaraValidatr)
+library(stringr)
 
 # Taiki's helper function for dates
 # Helper function to create all the "YYYY-MM-DDThh:mm:ssZ" formatted date strings that JSON will want. *Note that this requires
@@ -17,26 +19,80 @@ posixToText <- function(x) {
   format(x, '%Y-%m-%dT%H:%M:%S')
 }
 
-#Read in Data----
-# Deployment Details
+## Read in Data----
+# Deployment Details - this reads in deployments that have been completed and transferred to the deployDetails sheet,
+# it will not process deployments from the 'NEW DEPLOYMENT TO SAVE' sheet
 deployDetails <- read_sheet(
   "https://docs.google.com/spreadsheets/d/10bxlwfVOe1LFfj69B_YddxcA0V14m7codYwgD2YncFk/edit?gid=42687545#gid=42687545",
   sheet = 'deployDetails'
 )
 
-#ADRIFT-----
+# clean recording devices
+deployDetails$Instrument_ID <- as.character(deployDetails$Instrument_ID)
+
+for (drift in 1:nrow(deployDetails)) {
+  if (deployDetails$Type[drift] == "SM3M") {
+    deployDetails$Instrument_ID[drift] <- gsub(
+      " #",
+      "_",
+      deployDetails$Instrument_ID[drift]
+    )
+  } else if (deployDetails$Type[drift] == "SM2Bat") {
+    deployDetails$Instrument_ID[drift] <- gsub(
+      "\\+Bat #",
+      "BAT_",
+      deployDetails$Instrument_ID[drift]
+    )
+  }
+}
+
+# clean depth sensors
+deployDetails$Depth_Sensor <- as.character(deployDetails$Depth_Sensor)
+
+for (drift in 1:nrow(deployDetails)) {
+  if (deployDetails$Depth_Sensor[drift] == "NA") {
+    deployDetails$Depth_Sensor[drift] <- ''
+  } else if (deployDetails$Depth_Sensor[drift] == "SM2+") {
+    deployDetails$Depth_Sensor[drift] <- gsub(
+      "\\+",
+      "",
+      deployDetails$Depth_Sensor[drift]
+    )
+  }
+}
+
+for (drift in 1:nrow(deployDetails)) {
+  if (
+    grepl(";", deployDetails$Depth_Sensor[drift]) &&
+      grepl("\\+", deployDetails$Depth_Sensor[drift])
+  ) {
+    deployDetails$Depth_Sensor[drift] <- gsub(
+      "; ",
+      "_",
+      deployDetails$Depth_Sensor[drift],
+      fixed = TRUE
+    )
+    deployDetails$Depth_Sensor[drift] <- gsub(
+      "\\+$",
+      "",
+      deployDetails$Depth_Sensor[drift]
+    )
+  }
+}
+
+# ADRIFT-----
+## initial data cleaning ----
 # select deployments of interest
 deployDetails_ADRIFT <- deployDetails %>%
   filter(Project == 'ADRIFT', Status == 'Complete')
 
-# initial data cleaning
 ## GPS Devices
 deployDetails_ADRIFT <- deployDetails_ADRIFT %>%
   mutate(GPS_ID = str_to_upper(GPS_ID))
 
 gps_devices <- deployDetails_ADRIFT$GPS_ID %>%
   str_split("/") %>%
-  map(~ paste0("satellite-tracker_", str_trim(.x))) %>%
+  map(~ paste0("SATELLITE_TRACKER-", str_trim(.x))) %>%
   map_chr(~ paste(.x, collapse = ","))
 
 ##Deployments----
@@ -56,7 +112,7 @@ deployments <- deployDetails_ADRIFT %>%
     project_code = 'SWFSC_ADRIFT_2021-2023',
     site_code = Site,
     deployment_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -66,13 +122,21 @@ deployments <- deployDetails_ADRIFT %>%
       SensorNumber_2,
       ",",
       gps_devices,
-      ",",
-      map_chr(
-        str_split(Depth_Sensor, "/"),
-        ~ paste0("depth-sensor_", str_trim(.x)) %>% paste(collapse = ",")
+      case_when(
+        is.na(Depth_Sensor) |
+          Depth_Sensor == "<empty>" |
+          nchar(str_trim(Depth_Sensor)) == 0 ~ "",
+        TRUE ~ paste0(
+          ",",
+          map_chr(
+            stringr::str_split(Depth_Sensor, "/"),
+            ~ paste0("DEPTH_SENSOR-", stringr::str_trim(.x)) %>%
+              paste(collapse = ",")
+          )
+        )
       )
     ),
-    deployment_platform_type_code = 'drifting_buoy',
+    deployment_platform_type_code = 'DRIFTING_BUOY',
     deployment_water_depth_m = '',
     deployment_datetime = paste0(
       posixToText(as_datetime(as.numeric(Deployment_Date))),
@@ -114,9 +178,9 @@ recordings <- deployDetails_ADRIFT %>%
       "_",
       Data_ID
     ),
-    recording_code = "SoundTrap_Recordings",
+    recording_code = "SOUNDTRAP_RECORDING",
     recording_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -169,7 +233,7 @@ recordings <- deployDetails_ADRIFT %>%
     recording_redacted = '',
     recording_json = '',
     recording_uri = paste0(
-      "gs:/swfsc-1/2021-23_ADRIFT_Rankin/drifting_recorder/audio_wav/",
+      "gs://swfsc-1/2021-23_ADRIFT_Rankin/drifting_recorder/audio_wav/",
       Data_ID
     ),
     recording_comments = ''
@@ -189,9 +253,9 @@ tracks <- deployDetails_ADRIFT %>%
       "_",
       Data_ID
     ),
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_uri = paste0(
-      "gs:/swfsc-1-working/2021-23_ADRIFT_Rankin/drifting_recorder/",
+      "gs://swfsc-1-working/2021-23_ADRIFT_Rankin/drifting_recorder/",
       Data_ID,
       "/metadata/gps/",
       Data_ID,
@@ -238,63 +302,74 @@ track_positions <- allGPS %>%
   transmute(
     organization_code = 'SWFSC',
     deployment_code = deployment_code,
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_position_datetime = paste0(
       format(as_datetime(UTC), "%Y-%m-%dT%H:%M:%S"),
       "Z"
     ),
     track_position_latitude = Latitude,
     track_position_longitude = Longitude,
-    track_position_speed_knots = knots,
+    # track_position_speed_knots = knots, # all points do not have speed value, need to change to if statement to be blank if not recorded
+    track_position_speed_knots = if_else(
+      is.na(knots),
+      '',
+      as.character(knots)
+    ),
     track_position_depth_m = 100,
     track_position_json = '',
     track_position_comments = ''
   )
 
 ##Save Sheets----
-write_csv(deployments, 'Makara/Sheets/ADRIFT/deployments.csv')
-write_csv(recordings, 'Makara/Sheets/ADRIFT/recordings.csv')
-write_csv(tracks, 'Makara/Sheets/ADRIFT/tracks.csv')
-write_csv(track_positions, 'Makara/Sheets/ADRIFT/track_positions.csv')
-
-##FOR TESTING
-# Create a new workbook
-wb <- createWorkbook()
-
-# Add worksheets with each data frame
-addWorksheet(wb, "deployments")
-writeData(wb, "deployments", deployments)
-
-addWorksheet(wb, "recordings")
-writeData(wb, "recordings", recordings)
-
-addWorksheet(wb, "tracks")
-writeData(wb, "tracks", tracks)
-
-addWorksheet(wb, "track_positions")
-writeData(wb, "track_positions", track_positions)
-
-
-# Save the workbook
-saveWorkbook(
-  wb,
-  file = "Makara/Sheets/ADRIFT/ADRIFT_MAKARA_Sheets.xlsx",
-  overwrite = TRUE
+ADRIFT_deployments <- deployments
+ADRIFT_recordings <- recordings
+ADRIFT_tracks <- tracks
+ADRIFT_track_positions <- track_positions
+write_csv(deployments, 'Makara/MakaraSubmission12022025/ADRIFT/deployments.csv')
+write_csv(recordings, 'Makara/MakaraSubmission12022025/ADRIFT/recordings.csv')
+write_csv(tracks, 'Makara/MakaraSubmission12022025/ADRIFT/tracks.csv')
+write_csv(
+  track_positions,
+  'Makara/MakaraSubmission12022025/ADRIFT/track_positions.csv'
 )
 
+##FOR TESTING
+# # Create a new workbook
+# wb <- createWorkbook()
+
+# # Add worksheets with each data frame
+# addWorksheet(wb, "deployments")
+# writeData(wb, "deployments", deployments)
+
+# addWorksheet(wb, "recordings")
+# writeData(wb, "recordings", recordings)
+
+# addWorksheet(wb, "tracks")
+# writeData(wb, "tracks", tracks)
+
+# addWorksheet(wb, "track_positions")
+# writeData(wb, "track_positions", track_positions)
+
+# # Save the workbook
+# saveWorkbook(
+#   wb,
+#   file = "Makara/Sheets/ADRIFT/ADRIFT_MAKARA_Sheets.xlsx",
+#   overwrite = TRUE
+# )
+
 #PASCAL-----
+## initial data cleaning----
 # select deployments of interest
 deployDetails_PASCAL <- deployDetails %>%
-  filter(Project == 'PASCAL')
+  filter(Project == 'PASCAL', Status == 'Complete')
 
-# initial data cleaning
 ## GPS Devices
 deployDetails_PASCAL <- deployDetails_PASCAL %>%
   mutate(GPS_ID = str_to_upper(GPS_ID))
 
 gps_devices <- deployDetails_PASCAL$GPS_ID %>%
   str_split("/") %>%
-  map(~ paste0("satellite-tracker_", str_trim(.x))) %>%
+  map(~ paste0("SATELLITE_TRACKER-", str_trim(.x))) %>%
   map_chr(~ paste(.x, collapse = ","))
 
 ##Deployments----
@@ -314,7 +389,7 @@ deployments <- deployDetails_PASCAL %>%
     project_code = 'SWFSC_PASCAL_2016',
     site_code = Site,
     deployment_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -324,13 +399,21 @@ deployments <- deployDetails_PASCAL %>%
       SensorNumber_2,
       ",",
       gps_devices,
-      ",",
-      map_chr(
-        str_split(Depth_Sensor, "/"),
-        ~ paste0("depth-sensor_", str_trim(.x)) %>% paste(collapse = ",")
+      case_when(
+        is.na(Depth_Sensor) |
+          Depth_Sensor == "<empty>" |
+          nchar(str_trim(Depth_Sensor)) == 0 ~ "",
+        TRUE ~ paste0(
+          ",",
+          map_chr(
+            stringr::str_split(Depth_Sensor, "/"),
+            ~ paste0("DEPTH_SENSOR-", stringr::str_trim(.x)) %>%
+              paste(collapse = ",")
+          )
+        )
       )
     ),
-    deployment_platform_type_code = 'drifting_buoy',
+    deployment_platform_type_code = 'DRIFTING_BUOY',
     deployment_water_depth_m = '',
     deployment_datetime = paste0(
       posixToText(as_datetime(as.numeric(Deployment_Date))),
@@ -372,13 +455,15 @@ recordings <- deployDetails_PASCAL %>%
       "_",
       Data_ID
     ),
-    recording_code = if_else(
-      str_starts(Type, "ST"),
-      "SoundTrap_Recordings",
-      paste0(Type, "_Recordings")
+    recording_code = str_to_upper(
+      if_else(
+        str_starts(Type, "ST"),
+        "SOUNDTRAP_RECORDING",
+        paste0(Type, "_RECORDINGS")
+      )
     ),
     recording_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -431,7 +516,7 @@ recordings <- deployDetails_PASCAL %>%
     recording_redacted = '',
     recording_json = '',
     recording_uri = paste0(
-      "gs:/swfsc-1/2016_PASCAL/drifting_recorder/audio_wav/",
+      "gs://swfsc-1/2016_PASCAL/drifting_recorder/audio_wav/",
       Data_ID
     ),
     recording_comments = ''
@@ -451,9 +536,9 @@ tracks <- deployDetails_PASCAL %>%
       "_",
       Data_ID
     ),
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_uri = paste0(
-      "gs:/swfsc-1-working/2016_PASCAL/drifting_recorder/",
+      "gs://swfsc-1-working/2016_PASCAL/drifting_recorder/",
       Data_ID,
       "/metadata/gps/",
       Data_ID,
@@ -500,62 +585,73 @@ track_positions <- allGPS %>%
   transmute(
     organization_code = 'SWFSC',
     deployment_code = deployment_code,
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_position_datetime = paste0(
       format(as_datetime(UTC), "%Y-%m-%dT%H:%M:%S"),
       "Z"
     ),
     track_position_latitude = Latitude,
     track_position_longitude = Longitude,
-    track_position_speed_knots = knots,
+    track_position_speed_knots = if_else(
+      is.na(knots),
+      '',
+      as.character(knots)
+    ),
     track_position_depth_m = 100,
     track_position_json = '',
     track_position_comments = ''
   )
 
 ##Save Sheets----
-write_csv(deployments, 'Makara/Sheets/PASCAL/deployments.csv')
-write_csv(recordings, 'Makara/Sheets/PASCAL/recordings.csv')
-write_csv(tracks, 'Makara/Sheets/PASCAL/tracks.csv')
-write_csv(track_positions, 'Makara/Sheets/PASCAL/track_positions.csv')
-
-##FOR TESTING
-# Create a new workbook
-wb <- createWorkbook()
-
-# Add worksheets with each data frame
-addWorksheet(wb, "deployments")
-writeData(wb, "deployments", deployments)
-
-addWorksheet(wb, "recordings")
-writeData(wb, "recordings", recordings)
-
-addWorksheet(wb, "tracks")
-writeData(wb, "tracks", tracks)
-
-addWorksheet(wb, "track_positions")
-writeData(wb, "track_positions", track_positions)
-
-# Save the workbook
-saveWorkbook(
-  wb,
-  file = "Makara/Sheets/PASCAL/PASCAL_MAKARA_Sheets.xlsx",
-  overwrite = TRUE
+PASCAL_deployments <- deployments
+PASCAL_recordings <- recordings
+PASCAL_tracks <- tracks
+PASCAL_track_positions <- track_positions
+write_csv(deployments, 'Makara/MakaraSubmission12022025/PASCAL/deployments.csv')
+write_csv(recordings, 'Makara/MakaraSubmission12022025/PASCAL/recordings.csv')
+write_csv(tracks, 'Makara/MakaraSubmission12022025/PASCAL/tracks.csv')
+write_csv(
+  track_positions,
+  'Makara/MakaraSubmission12022025/PASCAL/track_positions.csv'
 )
 
+##FOR TESTING
+# # Create a new workbook
+# wb <- createWorkbook()
+
+# # Add worksheets with each data frame
+# addWorksheet(wb, "deployments")
+# writeData(wb, "deployments", deployments)
+
+# addWorksheet(wb, "recordings")
+# writeData(wb, "recordings", recordings)
+
+# addWorksheet(wb, "tracks")
+# writeData(wb, "tracks", tracks)
+
+# addWorksheet(wb, "track_positions")
+# writeData(wb, "track_positions", track_positions)
+
+# # Save the workbook
+# saveWorkbook(
+#   wb,
+#   file = "Makara/Sheets/PASCAL/PASCAL_MAKARA_Sheets.xlsx",
+#   overwrite = TRUE
+# )
+
 #CCES-----
+## initial data cleaning----
 # select deployments of interest
 deployDetails_CCES <- deployDetails %>%
   filter(Project == 'CCES', Status == 'Complete')
 
-# initial data cleaning
 ## GPS Devices
 deployDetails_CCES <- deployDetails_CCES %>%
   mutate(GPS_ID = str_to_upper(GPS_ID))
 
 gps_devices <- deployDetails_CCES$GPS_ID %>%
   str_split("/") %>%
-  map(~ paste0("satellite-tracker_", str_trim(.x))) %>%
+  map(~ paste0("SATELLITE_TRACKER-", str_trim(.x))) %>%
   map_chr(~ paste(.x, collapse = ","))
 
 ##Deployments----
@@ -575,7 +671,7 @@ deployments <- deployDetails_CCES %>%
     project_code = 'SWFSC_CCES_2018',
     site_code = Site,
     deployment_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -585,13 +681,21 @@ deployments <- deployDetails_CCES %>%
       SensorNumber_2,
       ",",
       gps_devices,
-      ",",
-      map_chr(
-        str_split(Depth_Sensor, "/"),
-        ~ paste0("depth-sensor_", str_trim(.x)) %>% paste(collapse = ",")
+      case_when(
+        is.na(Depth_Sensor) |
+          Depth_Sensor == "<empty>" |
+          nchar(str_trim(Depth_Sensor)) == 0 ~ "",
+        TRUE ~ paste0(
+          ",",
+          map_chr(
+            stringr::str_split(Depth_Sensor, "/"),
+            ~ paste0("DEPTH_SENSOR-", stringr::str_trim(.x)) %>%
+              paste(collapse = ",")
+          )
+        )
       )
     ),
-    deployment_platform_type_code = 'drifting_buoy',
+    deployment_platform_type_code = 'DRIFTING_BUOY',
     deployment_water_depth_m = '',
     deployment_datetime = paste0(
       posixToText(as_datetime(as.numeric(Deployment_Date))),
@@ -635,11 +739,11 @@ recordings <- deployDetails_CCES %>%
     ),
     recording_code = if_else(
       str_starts(Type, "ST"),
-      "SoundTrap_Recordings",
-      paste0(Type, "_Recordings")
+      "SOUNDTRAP_RECORDING",
+      paste0(Type, "_RECORDINGS")
     ),
     recording_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -692,7 +796,7 @@ recordings <- deployDetails_CCES %>%
     recording_redacted = '',
     recording_json = '',
     recording_uri = paste0(
-      "gs:/swfsc-1/2018_CCES/drifting_recorder/audio_wav/",
+      "gs://swfsc-1/2018_CCES/drifting_recorder/audio_wav/",
       Data_ID
     ),
     recording_comments = ''
@@ -712,9 +816,9 @@ tracks <- deployDetails_CCES %>%
       "_",
       Data_ID
     ),
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_uri = paste0(
-      "gs:/swfsc-1-working/2018_CCES/drifting_recorder/",
+      "gs://swfsc-1-working/2018_CCES/drifting_recorder/",
       Data_ID,
       "/metadata/gps/",
       Data_ID,
@@ -761,62 +865,73 @@ track_positions <- allGPS %>%
   transmute(
     organization_code = 'SWFSC',
     deployment_code = deployment_code,
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_position_datetime = paste0(
       format(as_datetime(UTC), "%Y-%m-%dT%H:%M:%S"),
       "Z"
     ),
     track_position_latitude = Latitude,
     track_position_longitude = Longitude,
-    track_position_speed_knots = knots,
+    track_position_speed_knots = if_else(
+      is.na(knots),
+      '',
+      as.character(knots)
+    ),
     track_position_depth_m = 100,
     track_position_json = '',
     track_position_comments = ''
   )
 
 ##Save Sheets----
-write_csv(deployments, 'Makara/Sheets/CCES/deployments.csv')
-write_csv(recordings, 'Makara/Sheets/CCES/recordings.csv')
-write_csv(tracks, 'Makara/Sheets/CCES/tracks.csv')
-write_csv(track_positions, 'Makara/Sheets/CCES/track_positions.csv')
-
-##FOR TESTING
-# Create a new workbook
-wb <- createWorkbook()
-
-# Add worksheets with each data frame
-addWorksheet(wb, "deployments")
-writeData(wb, "deployments", deployments)
-
-addWorksheet(wb, "recordings")
-writeData(wb, "recordings", recordings)
-
-addWorksheet(wb, "tracks")
-writeData(wb, "tracks", tracks)
-
-addWorksheet(wb, "track_positions")
-writeData(wb, "track_positions", track_positions)
-
-# Save the workbook
-saveWorkbook(
-  wb,
-  file = "Makara/Sheets/CCES/CCES_MAKARA_Sheets.xlsx",
-  overwrite = TRUE
+CCES_deployments <- deployments
+CCES_recordings <- recordings
+CCES_tracks <- tracks
+CCES_track_positions <- track_positions
+write_csv(deployments, 'Makara/MakaraSubmission12022025/CCES/deployments.csv')
+write_csv(recordings, 'Makara/MakaraSubmission12022025/CCES/recordings.csv')
+write_csv(tracks, 'Makara/MakaraSubmission12022025/CCES/tracks.csv')
+write_csv(
+  track_positions,
+  'Makara/MakaraSubmission12022025/CCES/track_positions.csv'
 )
 
+##FOR TESTING
+# # Create a new workbook
+# wb <- createWorkbook()
+
+# # Add worksheets with each data frame
+# addWorksheet(wb, "deployments")
+# writeData(wb, "deployments", deployments)
+
+# addWorksheet(wb, "recordings")
+# writeData(wb, "recordings", recordings)
+
+# addWorksheet(wb, "tracks")
+# writeData(wb, "tracks", tracks)
+
+# addWorksheet(wb, "track_positions")
+# writeData(wb, "track_positions", track_positions)
+
+# # Save the workbook
+# saveWorkbook(
+#   wb,
+#   file = "Makara/Sheets/CCES/CCES_MAKARA_Sheets.xlsx",
+#   overwrite = TRUE
+# )
+
 #CalCurCEAS-----
+## initial data cleaning----
 # select deployments of interest
 deployDetails_CalCurCEAS <- deployDetails %>%
   filter(Project == 'CalCurCEAS', Status == 'Complete')
 
-# initial data cleaning
 ## GPS Devices
 deployDetails_CalCurCEAS <- deployDetails_CalCurCEAS %>%
   mutate(GPS_ID = str_to_upper(GPS_ID))
 
 gps_devices <- deployDetails_CalCurCEAS$GPS_ID %>%
   str_split("/") %>%
-  map(~ paste0("satellite-tracker_", str_trim(.x))) %>%
+  map(~ paste0("SATELLITE_TRACKER-", str_trim(.x))) %>%
   map_chr(~ paste(.x, collapse = ","))
 
 ##Deployments----
@@ -824,17 +939,17 @@ gps_devices <- deployDetails_CalCurCEAS$GPS_ID %>%
 deployments <- deployDetails_CalCurCEAS %>%
   transmute(
     organization_code = 'SWFSC',
-    deployment_code = paste0(
+    deployment_code = str_to_upper(paste0(
       organization_code,
-      "_NEPac_",
+      "_NEPAC_",
       format(as_datetime(as.numeric(Deployment_Date)), "%Y%m%d"),
       "_",
       Data_ID
-    ),
-    project_code = 'SWFSC_CalCurCEAS_2024',
-    site_code = 'NEPac',
+    )),
+    project_code = 'SWFSC_CALCURCEAS_2024',
+    site_code = 'NEPAC',
     deployment_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -844,13 +959,21 @@ deployments <- deployDetails_CalCurCEAS %>%
       SensorNumber_2,
       ",",
       gps_devices,
-      ",",
-      map_chr(
-        str_split(Depth_Sensor, "/"),
-        ~ paste0("depth-sensor_", str_trim(.x)) %>% paste(collapse = ",")
+      case_when(
+        is.na(Depth_Sensor) |
+          Depth_Sensor == "<empty>" |
+          nchar(str_trim(Depth_Sensor)) == 0 ~ "",
+        TRUE ~ paste0(
+          ",",
+          map_chr(
+            stringr::str_split(Depth_Sensor, "/"),
+            ~ paste0("DEPTH_SENSOR-", stringr::str_trim(.x)) %>%
+              paste(collapse = ",")
+          )
+        )
       )
     ),
-    deployment_platform_type_code = 'drifting_buoy',
+    deployment_platform_type_code = 'DRIFTING_BUOY',
     deployment_water_depth_m = '',
     deployment_datetime = paste0(
       posixToText(as_datetime(as.numeric(Deployment_Date))),
@@ -883,16 +1006,18 @@ deployments <- deployDetails_CalCurCEAS %>%
 recordings <- deployDetails_CalCurCEAS %>%
   transmute(
     organization_code = 'SWFSC',
-    deployment_code = paste0(
-      organization_code,
-      "_NEPac_",
-      format(as_datetime(as.numeric(Deployment_Date)), "%Y%m%d"),
-      "_",
-      Data_ID
+    deployment_code = str_to_upper(
+      paste0(
+        organization_code,
+        "_NEPAC_",
+        format(as_datetime(as.numeric(Deployment_Date)), "%Y%m%d"),
+        "_",
+        Data_ID
+      )
     ),
-    recording_code = "SoundTrap_Recordings",
+    recording_code = "SOUNDTRAP_RECORDING",
     recording_device_codes = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       Instrument_ID,
       ",",
       "HTI_",
@@ -945,7 +1070,7 @@ recordings <- deployDetails_CalCurCEAS %>%
     recording_redacted = '',
     recording_json = '',
     recording_uri = paste0(
-      "gs:/swfsc-1/2024_CalCurCEAS/drifting_recorder/audio_wav/",
+      "gs://swfsc-1/2024_CalCurCEAS/drifting_recorder/audio_wav/",
       Data_ID
     ),
     recording_comments = ''
@@ -958,14 +1083,14 @@ tracks <- deployDetails_CalCurCEAS %>%
     organization_code = 'SWFSC',
     deployment_code = paste0(
       organization_code,
-      "_NEPac_",
+      "_NEPAC_",
       format(as_datetime(as.numeric(Deployment_Date)), "%Y%m%d"),
       "_",
-      Data_ID
+      str_to_upper(Data_ID)
     ),
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_uri = paste0(
-      "gs:/swfsc-1-working/2024_CalCurCEAS/drifting_recorder/",
+      "gs://swfsc-1-working/2024_CalCurCEAS/drifting_recorder/",
       Data_ID,
       "/metadata/gps/",
       Data_ID,
@@ -999,10 +1124,10 @@ deployment_lookup <- deployDetails_CalCurCEAS %>%
     DriftName = Data_ID,
     deployment_code = paste0(
       "SWFSC",
-      "_NEPac_",
+      "_NEPAC_",
       format(as_datetime(as.numeric(Deployment_Date)), "%Y%m%d"),
       "_",
-      Data_ID
+      str_to_upper(Data_ID)
     )
   )
 
@@ -1013,49 +1138,65 @@ track_positions <- allGPS %>%
   transmute(
     organization_code = 'SWFSC',
     deployment_code = deployment_code,
-    track_code = "drifting-buoy_track",
+    track_code = "DRIFTING-BUOY_TRACK",
     track_position_datetime = paste0(
       format(as_datetime(UTC), "%Y-%m-%dT%H:%M:%S"),
       "Z"
     ),
     track_position_latitude = Latitude,
     track_position_longitude = Longitude,
-    track_position_speed_knots = knots,
+    track_position_speed_knots = if_else(
+      is.na(knots),
+      '',
+      as.character(knots)
+    ),
     track_position_depth_m = 100,
     track_position_json = '',
     track_position_comments = ''
   )
 
 ##Save Sheets----
-write_csv(deployments, 'Makara/Sheets/CalCurCEAS/deployments.csv')
-write_csv(recordings, 'Makara/Sheets/CalCurCEAS/recordings.csv')
-write_csv(tracks, 'Makara/Sheets/CalCurCEAS/tracks.csv')
-write_csv(track_positions, 'Makara/Sheets/CalCurCEAS/track_positions.csv')
-
-##FOR TESTING
-# Create a new workbook
-wb <- createWorkbook()
-
-# Add worksheets with each data frame
-addWorksheet(wb, "deployments")
-writeData(wb, "deployments", deployments)
-
-addWorksheet(wb, "recordings")
-writeData(wb, "recordings", recordings)
-
-addWorksheet(wb, "tracks")
-writeData(wb, "tracks", tracks)
-
-addWorksheet(wb, "track_positions")
-writeData(wb, "track_positions", track_positions)
-
-# Save the workbook
-saveWorkbook(
-  wb,
-  file = "Makara/Sheets/CalCurCEAS/CalCurCEAS_MAKARA_Sheets.xlsx",
-  overwrite = TRUE
+CalCurCEAS_deployments <- deployments
+CalCurCEAS_recordings <- recordings
+CalCurCEAS_tracks <- tracks
+CalCurCEAS_track_positions <- track_positions
+write_csv(
+  deployments,
+  'Makara/MakaraSubmission12022025/CalCurCEAS/deployments.csv'
+)
+write_csv(
+  recordings,
+  'Makara/MakaraSubmission12022025/CalCurCEAS/recordings.csv'
+)
+write_csv(tracks, 'Makara/MakaraSubmission12022025/CalCurCEAS/tracks.csv')
+write_csv(
+  track_positions,
+  'Makara/MakaraSubmission12022025/CalCurCEAS/track_positions.csv'
 )
 
+##FOR TESTING
+# # Create a new workbook
+# wb <- createWorkbook()
+
+# # Add worksheets with each data frame
+# addWorksheet(wb, "deployments")
+# writeData(wb, "deployments", deployments)
+
+# addWorksheet(wb, "recordings")
+# writeData(wb, "recordings", recordings)
+
+# addWorksheet(wb, "tracks")
+# writeData(wb, "tracks", tracks)
+
+# addWorksheet(wb, "track_positions")
+# writeData(wb, "track_positions", track_positions)
+
+# # Save the workbook
+# saveWorkbook(
+#   wb,
+#   file = "Makara/Sheets/CalCurCEAS/CalCurCEAS_MAKARA_Sheets.xlsx",
+#   overwrite = TRUE
+# )
 
 #Optional: Metadata Tables----
 ##Devices Table----
@@ -1086,10 +1227,10 @@ recording_devices <- recorders %>%
   transmute(
     organization_code = 'SWFSC',
     device_code = paste0(
-      "SoundTrap_",
+      "SOUNDTRAP_",
       as.character(`Instrument_ID (serial number)`)
     ),
-    device_type_code = 'recording_device',
+    device_type_code = 'RECORDING_DEVICE',
     device_manufacturer = 'Ocean Instruments',
     device_model_number = gsub('^ST', 'SoundTrap ', Type),
     device_model_number = gsub('HF', ' High Frequency', device_model_number),
@@ -1098,16 +1239,20 @@ recording_devices <- recorders %>%
   )
 
 # device_json
-recording_devices$device_json <- ifelse(
-  is.na(recorders$`Calibration dB re. 1 μPa (gain for 1 channel)`),
-  recorders$`Sensitivity dB re. 1 μPa/V`,
-  recorders$`Calibration dB re. 1 μPa (gain for 1 channel)`
+recording_devices$device_json <- if_else(
+  !is.na(recorders$`Calibration dB re. 1 μPa (gain for 1 channel)`),
+  as.character(recorders$`Calibration dB re. 1 μPa (gain for 1 channel)`),
+  if_else(
+    !is.na(recorders$`Sensitivity dB re. 1 μPa/V`),
+    as.character(recorders$`Sensitivity dB re. 1 μPa/V`),
+    ''
+  )
 )
 
 # Function to transform device_json values
 transform_device_json <- function(x) {
   if (is.na(x) || x == "") {
-    return(NA)
+    return('')
   }
 
   # Check if it contains both High and Low
@@ -1133,8 +1278,8 @@ recording_devices <- recording_devices %>%
 hydrophone_devices <- hydrophones %>%
   mutate(
     organization_code = 'SWFSC',
-    device_code = paste0("HTI_", as.character(`Serial Number`)),
-    device_type_code = 'hydrophone-individual',
+    device_code = paste0("HTI_", str_to_upper(as.character(`Serial Number`))),
+    device_type_code = 'HYDROPHONE_INDIVIDUAL',
     device_manufacturer = 'High Tech, Inc.',
     device_model_number = Model,
     device_serial_number = as.character(`Serial Number`),
@@ -1156,8 +1301,11 @@ hydrophone_devices <- hydrophones %>%
 gps_devices <- gps %>%
   transmute(
     organization_code = 'SWFSC',
-    device_code = paste0('satellite-tracker_', as.character(`GPS Name`)),
-    device_type_code = 'satellite-tracker',
+    device_code = paste0(
+      'SATELLITE_TRACKER-',
+      str_to_upper(as.character(`GPS Name`))
+    ),
+    device_type_code = 'SATELLITE_TRACKER',
     device_manufacturer = case_when(
       str_detect(`GPS Name`, regex("SO", ignore_case = TRUE)) ~ "Globalstar",
       TRUE ~ "SPOT LLC"
@@ -1176,11 +1324,11 @@ depth_devices <- depth %>%
   transmute(
     organization_code = 'SWFSC',
     device_code = paste0(
-      'depth-sensor_',
+      'DEPTH_SENSOR-',
       str_remove(as.character(`Depth Sensor (serial number)`), "^U-")
     ),
     device_manufacturer = 'ReefNet Inc.',
-    device_type_code = 'depth-sensor',
+    device_type_code = 'DEPTH_SENSOR',
     device_model_number = Type,
     device_serial_number = str_remove(
       as.character(`Depth Sensor (serial number)`),
@@ -1235,13 +1383,13 @@ projects <- tibble(
     "SWFSC_PASCAL_2016",
     "SWFSC_CCES_2018",
     "SWFSC_ADRIFT_2021-2023",
-    "SWFSC_CalCurCEAS_2024"
+    "SWFSC_CALCURCEAS_2024"
   ),
   project_name = c(
     "PASCAL_2016",
     "CCES_2018",
     "ADRIFT_2021-2023",
-    "CalCurCEAS_2024"
+    "CALCURCEAS_2024"
   ),
   project_description = c(
     "The Passive Acoustics Survey of Cetacean Abundance Levels (PASCAL 2016), was a large scale passive acoustic survey to obtain improved distribution and population size data for deep-diving species, namely beaked whales (Ziphiidae), sperm whales (Physeter macrocephalus), and dwarf and pygmy sperm whales (Kogia sp.).",
@@ -1266,7 +1414,7 @@ siteList <- read_sheet(
 sites <- siteList %>%
   transmute(
     organization_code = 'SWFSC',
-    site_code = `Region Code`,
+    site_code = str_to_upper(`Region Code`),
     site_name = '',
     site_description = Description,
     site_latitude = '',
@@ -1278,118 +1426,86 @@ sites <- siteList %>%
 sites <- na.omit(sites)
 
 ##Save Sheets----
-write_csv(devices, 'Makara/Sheets/devices.csv')
-write_csv(projects, 'Makara/Sheets/projects.csv')
-write_csv(sites, 'Makara/Sheets/sites.csv')
+write_csv(devices, 'Makara/MakaraSubmission12022025/devices.csv')
+write_csv(projects, 'Makara/MakaraSubmission12022025/projects.csv')
+write_csv(sites, 'Makara/MakaraSubmission12022025/sites.csv')
 
-#Optional: Combine Sheets----
-# Get a list of all deployments CSV files from the project subdirectories
-deployments_files <- list.files(
-  path = here("Makara", "Sheets"),
-  pattern = "deployments\\.csv$",
-  full.names = TRUE,
-  recursive = TRUE
+# #Optional: Combine Sheets----
+combined_deployments <- bind_rows(
+  ADRIFT_deployments,
+  CCES_deployments,
+  PASCAL_deployments,
+  CalCurCEAS_deployments
 )
-
-# Get a list of all recordings CSV files
-recordings_files <- list.files(
-  path = here("Makara", "Sheets"),
-  pattern = "recordings\\.csv$",
-  full.names = TRUE,
-  recursive = TRUE
+combined_recordings <- bind_rows(
+  ADRIFT_recordings,
+  CCES_recordings,
+  PASCAL_recordings,
+  CalCurCEAS_recordings
 )
-
-# Get a list of all tracks CSV files
-tracks_files <- list.files(
-  path = here("Makara", "Sheets"),
-  pattern = "tracks\\.csv$",
-  full.names = TRUE,
-  recursive = TRUE
+combined_tracks <- bind_rows(
+  ADRIFT_tracks,
+  CCES_tracks,
+  PASCAL_tracks,
+  CalCurCEAS_tracks
 )
-
-# Get a list of all track_positions CSV files
-track_positions_files <- list.files(
-  path = here("Makara", "Sheets"),
-  pattern = "track_positions\\.csv$",
-  full.names = TRUE,
-  recursive = TRUE
-)
-
-# Combine all deployments sheets into a single data frame
-combined_deployments <- map_dfr(
-  deployments_files,
-  read_csv,
-  show_col_types = FALSE
-)
-
-# Combine all recordings sheets
-combined_recordings <- map_dfr(
-  recordings_files,
-  read_csv,
-  show_col_types = FALSE
-)
-
-# Combine all tracks sheets
-combined_tracks <- map_dfr(
-  tracks_files,
-  read_csv,
-  show_col_types = FALSE
-)
-
-# Combine all track_positions sheets
-combined_track_positions <- map_dfr(
-  track_positions_files,
-  read_csv,
-  show_col_types = FALSE
+combined_track_positions <- bind_rows(
+  ADRIFT_track_positions,
+  CCES_track_positions,
+  PASCAL_track_positions,
+  CalCurCEAS_track_positions
 )
 
 # save sheets
 write_csv(
   combined_deployments,
-  here("Makara", "Sheets", "deployments.csv")
+  here("Makara/MakaraSubmission12022025/", "deployments.csv")
 )
 
 write_csv(
   combined_recordings,
-  here("Makara", "Sheets", "recordings.csv")
+  here("Makara/MakaraSubmission12022025/", "recordings.csv")
 )
 
-write_csv(combined_tracks, here("Makara", "Sheets", "tracks.csv"))
+write_csv(
+  combined_tracks,
+  here("Makara/MakaraSubmission12022025/", "tracks.csv")
+)
 
 write_csv(
   combined_track_positions,
-  here("Makara", "Sheets", "track_positions.csv")
+  here("Makara/MakaraSubmission12022025/", "track_positions.csv")
 )
 
-# For Testing: Create a new workbook
-wb <- createWorkbook()
+# # For Testing: Create a new workbook
+# wb <- createWorkbook()
 
-addWorksheet(wb, "deployments")
-writeData(wb, "deployments", combined_deployments)
+# addWorksheet(wb, "deployments")
+# writeData(wb, "deployments", combined_deployments)
 
-addWorksheet(wb, "recordings")
-writeData(wb, "recordings", combined_recordings)
+# addWorksheet(wb, "recordings")
+# writeData(wb, "recordings", combined_recordings)
 
-addWorksheet(wb, "tracks")
-writeData(wb, "tracks", combined_tracks)
+# addWorksheet(wb, "tracks")
+# writeData(wb, "tracks", combined_tracks)
 
-addWorksheet(wb, "track_positions")
-writeData(wb, "track_positions", combined_track_positions)
+# addWorksheet(wb, "track_positions")
+# writeData(wb, "track_positions", combined_track_positions)
 
-# add the other optional metadata tables if you want to
-devices <- read_csv(here("Makara", "Sheets", "devices.csv"))
-projects <- read_csv(here("Makara", "Sheets", "projects.csv"))
-sites <- read_csv(here("Makara", "Sheets", "sites.csv"))
-addWorksheet(wb, "devices")
-writeData(wb, "devices", devices)
-addWorksheet(wb, "projects")
-writeData(wb, "projects", projects)
-addWorksheet(wb, "sites")
-writeData(wb, "sites", sites)
+# # add the other optional metadata tables if you want to
+# devices <- read_csv(here("Makara/MakaraSubmission12022025/", "devices.csv"))
+# projects <- read_csv(here("Makara/MakaraSubmission12022025/", "projects.csv"))
+# sites <- read_csv(here("Makara/MakaraSubmission12022025/", "sites.csv"))
+# addWorksheet(wb, "devices")
+# writeData(wb, "devices", devices)
+# addWorksheet(wb, "projects")
+# writeData(wb, "projects", projects)
+# addWorksheet(wb, "sites")
+# writeData(wb, "sites", sites)
 
-# Save the complete workbook
-openxlsx::saveWorkbook(
-  wb,
-  file = here("Makara", "Sheets", "Combined_MAKARA_Sheets.xlsx"),
-  overwrite = TRUE
-)
+# # Save the complete workbook
+# openxlsx::saveWorkbook(
+#   wb,
+#   file = here("Makara/MakaraSubmission12022025/", "Combined_MAKARA_Sheets.xlsx"),
+#   overwrite = TRUE
+# )
