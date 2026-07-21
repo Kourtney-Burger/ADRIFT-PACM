@@ -1,0 +1,8 @@
+organization_code,device_code,device_type_code,device_manufacturer,device_model_name,device_model_number,device_serial_number,device_description,device_start_date,device_end_date,device_alias,device_json,device_comments,child_device_codes
+NEFSC,SOUNDTRAP-6077,RECORDING_DEVICE,Ocean Instruments,ST600 HF,600,6077,SoundTrap600 High-Frequency model,2020-09-25T00:00:00+00:00,,,"{""GAIN_HIGH"":176.3,""GAIN_LOW"":188.9}",designated for PA group project,
+NEFSC,SOUNDTRAP-6124,RECORDING_DEVICE,Ocean Instruments,ST600 HF,600,6124,SoundTrap600 High-Frequency model,2020-09-25T00:00:00+00:00,,,"{""GAIN_HIGH"":177.4,""GAIN_LOW"":189.8}",designated for PA group project; used for Seamount project,
+NEFSC,SOUNDTRAP-6125,RECORDING_DEVICE,Ocean Instruments,ST600 STD,600,6125,SoundTrap600,2020-09-25T00:00:00+00:00,,,"{""GAIN_HIGH"":177.4,""GAIN_LOW"":189.9}",designated for PA group project; loaned to Dani in Spring 2024,
+NEFSC,SOUNDTRAP-8308,RECORDING_DEVICE,Ocean Instruments,ST600 HF,600,8308.0,SoundTrap600 High-Frequency model,2021-01-07T00:00:00+00:00,,,"{""GAIN_HIGH"":176.3,""GAIN_LOW"":190.1}",designated for PA group project,
+NEFSC,TEMPERATURE_SENSOR-GENERIC,TEMPERATURE_SENSOR,,,,,Temperature sensor,,,,,,
+NEFSC,VEMCO-549827,ACOUSTIC_RELEASE,Vemco,VR2AR,,549827,VR2AR Acoustic release and receiver,2020-10-01T00:00:00+00:00,,,,CD_NUMBER=CD0004359169; PA group project,
+NEFSC,VEMCO-549830,ACOUSTIC_RELEASE,Vemco,VR2AR,,549830,VR2AR Acoustic release and receiver,2020-10-01T00:00:00+00:00,,,,CD_NUMBER=CD0004359172; designated for ONMS,

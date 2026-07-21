@@ -1,0 +1,4 @@
+organization_code,device_code,device_type_code,device_manufacturer,device_model_name,device_model_number,device_serial_number,device_description,device_start_date,device_end_date,device_alias,device_json,device_comments,child_device_codes
+WHOI,DMON2-GENERIC,RECORDING_DEVICE,Woods Hole Oceanographic Institution,DMON,2,,Collaborator DMON2,,,,,,
+WHOI,SLOCUM-WE16,ELECTRIC_GLIDER,Teledyne Webb Research,Slocum glider,,,Collaborator Slocum glider we16,,,,,,
+WHOI,VEMCO-VR2W-106548,ACTIVE_RECEIVER,Vemco,VR2W,,106548,Collaborator VR2W Acoustic receiver,,,,,,

@@ -1,0 +1,5 @@
+organization_code,device_code,device_type_code,device_manufacturer,device_model_name,device_model_number,device_serial_number,device_description,device_start_date,device_end_date,device_alias,device_json,device_comments,child_device_codes
+NEFSC,SOUNDTRAP-8391,RECORDING_DEVICE,Ocean Instruments,ST600 STD,600,8391.0,SoundTrap600,2020-01-04T00:00:00Z,,,"{""GAIN_HIGH"":177.6,""GAIN_LOW"":190.2}",designated for PA group project,
+NEFSC,FPOD-1036,RECORDING_DEVICE,Chelonia Limited,,,1036.0,FPOD,2020-06-23T00:00:00Z,,,"{""GAIN_HIGH"":176,""GAIN_LOW"":188.6}",designated for PA group project,
+NEFSC,TEMPERATURE_SENSOR-GENERIC,TEMPERATURE_SENSOR,,,,,Temperature sensor,2018-12-14T00:00:00Z,,,,,
+NEFSC,VEMCO-549835,ACOUSTIC_RELEASE,Vemco,VR2AR,,549835,VR2AR Acoustic release and receiver,2020-10-01T00:00:00Z,,,,CD_NUMBER=CD0004359177; designated for PA group project,
