@@ -1,0 +1,162 @@
+---
+title: "Format_bw_Makara"
+editor: visual
+---
+
+# Intro
+
+All beaked whale acoustic detection data must be formatted for the NOAA Fisheries Passive Acoustic Reporting System (PARS; <https://passiveacoustics.fisheries.noaa.gov/pars>). All detection data will ultimately be shared on the Passive Acoustic Cetacean Map (PACM; <https://passiveacoustics.fisheries.noaa.gov/pacm/>).
+
+Markara is an internal passive acoustic database for NOAA Fisheries, while PARS is the public-facing data submission system. Makara includes many more fields than PARS, and both are publicly displayed on PACM.
+
+This document takes Pamguard database files (.sqlite3) and generates data files ready to submit to Makara.
+
+Templates are provided for the required analysis and detections tables.
+
+```{r study-definition}
+
+#load required packages
+library(dplyr)
+library(RSQLite)
+library(here)
+library(stringr)
+library(tidyverse)
+
+source(here('Makara','functions','read_pg_events.R'))
+
+#define folder that contains all Pamguard databases
+DBList<-dir(path='F:/Beaked_whale_data/Databases',pattern='*.sqlite3',full.names = TRUE)
+#omit gliders
+DBList <- DBList[!grepl("glider", basename(DBList), ignore.case = TRUE)]
+
+#define folder that contains all GPS data
+baseEffort<-'C:/Users/annes/Documents/Github/CalCurCEAS-2024-Drifter-Analysis/_data/GPS/DASBRs'
+
+#define folder to save the data
+savedir<-'F:/Beaked_whale_data/PACM/'
+dir.create(savedir)
+
+#Deployment Data Codes
+DepTemplate<-read_csv(here('Makara','Templates','deployments.csv'),show_col_types = FALSE)
+
+#Detection Template
+DetTemplate<-read_csv(here('Makara','Templates','detections.csv'),show_col_types = FALSE)
+
+#Analysis Template
+AnalysisTemplate<-read_csv(here('Makara','Templates','analyses.csv'),show_col_types = FALSE)
+```
+
+## Load and process detections from Pamguard databases
+
+```{r process-PG-db}
+
+#Read Event data from all databases
+bwData <- purrr::map_dfr(
+  DBList,
+  read_pg_events,
+  deployment_codes = DepTemplate$deployment_code
+)
+
+#Convert timestamp columns & calculate duration
+bwData <- bwData |>
+  dplyr::mutate(
+    detection_start_datetime = as.POSIXct(UTC, format="%Y-%m-%d %H:%M:%OS", tz = "UTC"),
+    detection_end_datetime = as.POSIXct(EventEnd, format="%Y-%m-%d %H:%M:%OS", tz = "UTC"), 
+    detection_effort_secs=round(as.numeric(as.duration(interval(detection_start_datetime,detection_end_datetime))))
+  )
+
+detections <- bwData %>%
+  rename('detection_sound_source_code' = 'eventType') %>% 
+  dplyr::select('deployment_code','detection_start_datetime','detection_end_datetime','detection_effort_secs','detection_sound_source_code')
+  
+#Re-code species names
+#Remove leading and trailing whitespace
+detections$detection_sound_source_code <- trimws(detections$detection_sound_source_code)
+
+detections <- detections %>%
+  mutate(detection_sound_source_code = recode(detection_sound_source_code,
+                          BB = "BBWH",
+                          Bb = "BBWH",
+                          ZC = "GOBW",
+                          BW39V="HUBW",
+                          BW37V="HUBW",
+                          BW43 = "GTBW",
+                          MS = "STBWH",
+                          BW="UNME")) 
+#Remove detections of "BW?", "Oo" and "Other"
+detections<-detections %>%
+  filter(!detection_sound_source_code %in% c('BW?','?BW','Oo','Other'))
+
+```
+
+## Add required fields for Detections Worksheet
+
+```{r}
+#Define variables that are the same for all detections
+detections$organization_code<-'SWFSC'
+detections$analysis_code<-'BEAKED_ANALYSIS'
+detections$detection_call_type_code<-'OD_CLICK_FM'
+# detections$detection_behavior_code<-NA #NOT SURE RIGHT NOW
+# detections$detection_demographic<-NA #NOT SURE RIGHT NOW
+# detections$detection_n_validated<-NA #NOT SURE RIGHT NOW
+# detections$detection_n_total<-NA #NOT SURE RIGHT NOW
+detections$detection_result_code<-'DETECTED' 
+
+#Order columns to match the template
+detections_reordered<- detections %>% select(all_of(intersect(names(DetTemplate), names(detections))))
+ 
+#use readr::write_csv to preserve datetime formats
+readr::write_csv(detections_reordered,file='F:/Beaked_whale_data/PACM/detections.csv')
+
+```
+
+## Create Analysis Worksheet
+
+```{r}
+analysis<-data.frame(deployment_code=unique(detections$deployment_code))
+
+analysis$organization_code<-'SWFSC'
+analysis$analysis_code<-'BEAKED_ANALYSIS'
+analysis$recording_codes<-'SOUNDTRAP_RECORDING'
+analysis$analysis_sound_source_codes<-'BBWH,HUBW,BWC,GOBW,GTBW,STBWH,UNME'
+analysis$granularity_code<-'ENCOUNTER'
+analysis$start_datetime<-
+analysis$end_datetime<-
+analysis$analysis_sample_rate_khz<-384
+analysis$analysis_min_frequency_khz<-10
+analysis$analysis_max_frequency_khz<-384/2
+analysis$analysis_processing_code<-'POST-PROCESSED'
+analysis$analysis_quality_code<-'FULLY VALIDATED'
+analysis$analysis_protocol_reference<-'Simonis et al 2020 (https://swfsc-publications.fisheries.noaa.gov/publications/CR/2020/2020Simonis3.pdf)'
+analysis$analysis_release_data<-TRUE
+analysis$analysis_release_pacm<-TRUE
+analysis$detector_codes<-'PAMGUARD_CLICK'
+
+detections_reordered<- detections %>% select(all_of(intersect(names(DetTemplate), names(detections))))
+
+#Order columns to match the template
+analysis_reordered<-analysis %>% select(all_of(intersect(names(AnalysisTemplate), names(analysis))))
+
+#use readr::write_csv to preserve datetime formats
+readr::write_csv(analysis_reordered,file='F:/Beaked_whale_data/PACM/analysis.csv')
+```
+
+## Check Makara formatting
+
+```{r}
+library(makaraValidatr)
+
+# Validate specific tables only, in this case only deployments.csv and recordings.csv
+validate_submission("F:/Beaked_whale_data/PACM/", tables = c("detections"))
+
+```
+
+To-do:
+
+1.  Add analysis start_datetime and end_datetime from deployment sheet?
+
+Questions:
+
+1.  Should I include empty fields like "detection_behavior_code" or "detection_demographic_code", leave them as "NA", or omit them?
+2.  For analysis worksheet, do we want to set "analysis_release_data"\<-TRUE and analysis_release_pacm\<-TRUE
+3.  Should granularity_code be 'INTERVAL'? I would call them 'ENCOUNTERS', but interval also sort of makes sense
