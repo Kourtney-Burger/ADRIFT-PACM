@@ -1,6 +1,6 @@
 This folder contains the code to create worksheets for the Makara database.
 
-Follow the [Create_Makara_sheets.R script](https://github.com/Kourtney-Burger/ADRIFT-PACM/blob/main/Makara/Create_Makara_sheets.R) to create new sheets or edit the support sheets.
+Follow the [Create_Makara_sheets.R script](https://github.com/Kourtney-Burger/ADRIFT-PACM/blob/main/Makara/Functions/Create_Makara_sheets.R) to create new sheets or edit the support sheets.
 
 **Note:** These scripts are intended to streamline the Makara data submission sheets but some fields will need to be manually entered. Refer to the Makara Data Submission Guide (in progress) for details on individual data fields. All sheets should be manually reviewed for quality assurance after using these helper scripts.
 
@@ -8,7 +8,7 @@ More information on Makara can be found [here](https://nmfs-ost.github.io/PAM_Na
 
 ## CalCurCEAS 2024
 
-Deployment and recording tables have been created for this survey. Need to submit to database once ready. PIFSC will be responsible for submitting detection data from their analysis
+Deployment and recording tables have been created for this survey. PIFSC will be responsible for submitting detection data from their sperm whale analysis. Beaked whale, blue whale, and fin whale detections and analysis sheets will be submitted by SWFSC analysts. 
 
 ## ADRIFT
 
