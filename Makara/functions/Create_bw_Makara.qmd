@@ -113,7 +113,7 @@ detections$detection_call_type_code<-'OD_CLICK_FM'
 detections$detection_result_code<-'DETECTED' 
  
 #use readr::write_csv to preserve datetime formats
-readr::write_csv(detections,file=here('Makara','CalCurCEAS_Detections','detections.csv'))
+readr::write_csv(detections,file=here('Makara','CalCurCEAS_Detections','beaked_whale_detections.csv'))
 
 ```
 
@@ -144,7 +144,7 @@ analysis$detector_codes<-'PAMGUARD_CLICK'
 # analysis_reordered<-analysis %>% select(all_of(intersect(names(AnalysisTemplate), names(analysis))))
 
 #use readr::write_csv to preserve datetime formats
-readr::write_csv(analysis,file=here('Makara','CalCurCEAS_Detections','analyses.csv'))
+readr::write_csv(analysis,file=here('Makara','CalCurCEAS_Detections','beaked_whale_analyses.csv'))
 ```
 
 ## Check Makara formatting
